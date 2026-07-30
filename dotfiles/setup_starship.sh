@@ -28,8 +28,9 @@ if [ -f "$SCRIPT_DIR/starship.toml" ]; then
     cp "$SCRIPT_DIR/starship.toml" "$STARSHIP_TOML"
 else
     echo "[+] Fetching starship.toml from GitHub repository..."
-    curl -fsSL https://raw.githubusercontent.com/Locoxella/scar/main/dotfiles/starship.toml -o "$STARSHIP_TOML"
+    curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/starship.toml -o "$STARSHIP_TOML"
 fi
+
 
 echo "[✓] Configuration deployed to $STARSHIP_TOML"
 

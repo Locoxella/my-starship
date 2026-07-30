@@ -40,24 +40,34 @@ if (Test-Path (Join-Path $scriptDir "starship.toml")) {
     Copy-Item -Path (Join-Path $scriptDir "starship.toml") -Destination $targetToml -Force
 } else {
     Write-Host "[+] Fetching starship.toml from GitHub..." -ForegroundColor Green
-    $url = "https://raw.githubusercontent.com/Locoxella/scar/main/dotfiles/starship.toml"
+    $url = "https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/starship.toml"
     Invoke-WebRequest -Uri $url -OutFile $targetToml
 }
 
 Write-Host "[✓] Configuration deployed to $targetToml" -ForegroundColor Green
 
-# 3. Configure PowerShell Profile
-if (-not (Test-Path $PROFILE)) {
-    New-Item -ItemType File -Path $PROFILE -Force | Out-Null
+# 3. Configure PowerShell Profiles (Supports both Windows PowerShell 5.1 & PowerShell Core 7+)
+$profilesToUpdate = @(
+    $PROFILE,
+    "$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
+) | Select-Object -Unique
+
+foreach ($prof in $profilesToUpdate) {
+    if ($prof) {
+        $parentDir = Split-Path -Parent $prof
+        if (-not (Test-Path $parentDir)) { New-Item -ItemType Directory -Path $parentDir -Force | Out-Null }
+        if (-not (Test-Path $prof)) { New-Item -ItemType File -Path $prof -Force | Out-Null }
+        
+        $content = Get-Content $prof -Raw -ErrorAction SilentlyContinue
+        if ($content -notlike "*starship init powershell*") {
+            Write-Host "[+] Injecting Starship hook into profile: $prof" -ForegroundColor Yellow
+            Add-Content -Path $prof -Value "`n# Starship prompt initialization`nInvoke-Expression (&starship init powershell)"
+        } else {
+            Write-Host "[✓] Profile already configured: $prof" -ForegroundColor Green
+        }
+    }
 }
 
-$profileContent = Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue
-if ($profileContent -notlike "*starship init powershell*") {
-    Write-Host "[+] Injecting Starship hook into PowerShell Profile ($PROFILE)" -ForegroundColor Yellow
-    Add-Content -Path $PROFILE -Value "`n# Starship prompt initialization`nInvoke-Expression (&starship init powershell)"
-} else {
-    Write-Host "[✓] PowerShell profile already configured." -ForegroundColor Green
-}
 
 # 4. Check for WSL (Windows Subsystem for Linux)
 $wslCmd = Get-Command wsl -ErrorAction SilentlyContinue
