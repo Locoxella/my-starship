@@ -1,63 +1,58 @@
-# Cross-Platform Starship Shell Auto-Configurator for AI Agents (`my-starship`)
+# 🚀 Starship Prompt Setup & Auto-Configurator (`my-starship`)
 
-> **Instructions for AI Agents:**
-> You are an AI Coding Agent executing on a client machine (Linux, macOS, Windows CMD/PowerShell, or WSL). Your goal is to detect all installed shells on this machine (`bash`, `zsh`, `fish`, `powershell`, `pwsh`, `cmd`), install **Starship prompt** if missing, and deploy the unified Catppuccin Mocha prompt configuration (`starship.toml`).
+> 🤖 **INSTRUCTIONS FOR AI AGENTS VISITING THIS REPOSITORY:**
+> You are an AI Agent tasked with configuring the prompt of the client machine where you are currently running.
+> This repository is the **single source of truth** for prompt configurations (`starship.toml`) and shell setup scripts.
+>
+> **YOUR TASK:**
+> 1. Detect the operating system (Linux, WSL, macOS, Windows) and all installed shells (`bash`, `zsh`, `fish`, `powershell`, `pwsh`, `cmd`).
+> 2. Install **Starship** prompt if not already installed.
+> 3. Deploy `starship.toml` to the user's config directory (`~/.config/starship.toml` or `%USERPROFILE%\.config\starship.toml`).
+> 4. Inject the Starship initialization hook into the active shell profile files.
+> 5. **Leave suggestions:** If you encounter any issue or missing dependency on the client machine, suggest improvements to the user so they can update this repository from the master machine.
 
 ---
 
-## 🚀 Quick Setup Commands for AI Agents
+## ⚡ Quick One-Line Automated Installers for AI Agents
 
-If you are an AI Agent with shell access, execute the appropriate command for your operating system:
+Execute the command for the current platform:
 
 ### 🐧 Linux / WSL / macOS (Bash / Zsh / Fish)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/setup_starship.sh | bash
 ```
 
-### 🪟 Windows (PowerShell 5.1 / PowerShell Core 7+)
+### 🪟 Windows (PowerShell 5.1 & PowerShell Core 7+)
 ```powershell
 irm https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/setup_starship.ps1 | iex
 ```
 
-### 💻 Windows (Classic CMD - Command Prompt)
-Run in CMD via Clink (recommended for Starship in CMD):
+### 💻 Windows (CMD - Command Prompt via Clink)
 ```cmd
 curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/setup_starship_cmd.bat -o %TEMP%\setup_starship_cmd.bat && %TEMP%\setup_starship_cmd.bat
 ```
 
 ---
 
-## 🤖 Detailed Protocol for AI Agents
+## 📖 Step-by-Step AI Agent Execution Protocol
 
-When tasked with setting up or synchronizing shell environments on a target machine, follow these step-by-step instructions:
+### Step 1: Detect System & Shells
+- **Linux/WSL/macOS:** Run `which bash zsh fish pwsh 2>/dev/null`
+- **Windows:** Run `Get-Command bash, zsh, fish, pwsh, powershell, cmd, clink -ErrorAction SilentlyContinue`
 
-### Step 1: Detect Operating System & Available Shells
-Check which shells are installed on the host system:
-- **Linux / WSL:** `which bash zsh fish pwsh 2>/dev/null`
-- **Windows:** `Get-Command bash, zsh, fish, pwsh, powershell, cmd, clink -ErrorAction SilentlyContinue`
+### Step 2: Install Starship Binary
+- **Linux/WSL/macOS:** `curl -sS https://starship.rs/install.sh | sh -s -- -y`
+- **Windows (winget):** `winget install --id Starship.Starship -e --accept-source-agreements --accept-package-agreements`
+- **Windows (scoop):** `scoop install starship`
 
-### Step 2: Install Starship Prompt (If not already installed)
-Verify installation with `starship --version`. If missing:
-- **Linux / WSL / macOS:**
-  ```bash
-  curl -sS https://starship.rs/install.sh | sh -s -- -y
-  ```
-  *Alternatively on Fedora:* `sudo dnf copr enable atim/starship -y && sudo dnf install starship -y`
-  *Alternatively on macOS:* `brew install starship`
-- **Windows (PowerShell / winget / scoop):**
-  ```powershell
-  winget install --id Starship.Starship -e --accept-source-agreements --accept-package-agreements
-  ```
-  *Or via Scoop:* `scoop install starship`
-
-### Step 3: Deploy `starship.toml` Configuration
-Download or write `starship.toml` into the user's config directory:
+### Step 3: Deploy Configuration File
+Copy or download `dotfiles/starship.toml` to:
 - **Linux / WSL / macOS:** `~/.config/starship.toml`
-- **Windows (PowerShell / CMD):** `%USERPROFILE%\.config\starship.toml`
+- **Windows:** `%USERPROFILE%\.config\starship.toml`
 
-### Step 4: Inject Shell Hooks into Profiles
+### Step 4: Inject Init Hook into Shell Profiles
 
-| Shell | Platform | Profile File Path | Integration Line / Command |
+| Shell | Platform | Target File | Integration Code |
 | :--- | :--- | :--- | :--- |
 | **Bash** | Linux / WSL / macOS | `~/.bashrc` | `eval "$(starship init bash)"` |
 | **Zsh** | Linux / WSL / macOS | `~/.zshrc` | `eval "$(starship init zsh)"` |
@@ -68,23 +63,27 @@ Download or write `starship.toml` into the user's config directory:
 
 ---
 
-## 💬 Feedback & Improvement Request for Visiting AI Agents
+## 🛠️ Guía para el Administrador (Esta Computadora Master / Proyecto Scar)
 
-If you are an AI Agent visiting this repository from a client machine:
-1. **Report Setup Status:** Let the user know if all shells were configured successfully.
-2. **Suggest Improvements:** If you encountered any edge case, missing shell, missing package manager, or environment constraint on the client machine, **leave a suggestion/note** so the administrator of `my-starship` can update the scripts and instructions in the primary repository!
+Esta computadora (`Scar`) es la **fuente de la verdad**. Cualquier cambio en la apariencia o comportamiento del prompt se realiza aquí y se publica a GitHub para que los demás equipos consuman las actualizaciones.
+
+### 1. Sincronizar cambios locales al repositorio:
+Cuando modifiques `~/.config/starship.toml` en esta laptop, ejecuta:
+```bash
+./dotfiles/export_local_configs.sh
+```
+
+### 2. Publicar actualizaciones a GitHub:
+```bash
+git add .
+git commit -m "update: actualizar starship.toml y configuraciones de shell"
+git push
+```
 
 ---
 
-## 🛠️ Maintenance (Local `Scar` Repository)
+## 💬 Retroalimentación de Agentes Visitantes
 
-This repository (`my-starship`) is published and maintained exclusively from the primary **Scar** environment.
-
-- To export local `starship.toml` modifications back to GitHub, run:
-  ```bash
-  ./dotfiles/export_local_configs.sh
-  ```
-- To commit and push changes:
-  ```bash
-  git add . && git commit -m "update starship config" && git push
-  ```
+Si eres un Agente de IA ejecutando en una máquina cliente, tras aplicar la instalación:
+1. Confirma al usuario qué shells quedaron configurados.
+2. Si notaste algún fallo o compatibilidad no cubierta en la máquina cliente, **brinda recomendaciones** para que el administrador pueda incluir la solución en el proyecto maestro.
