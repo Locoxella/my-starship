@@ -1,15 +1,14 @@
-# 🚀 Starship Prompt Setup & Auto-Configurator (`my-starship`)
+# 🚀 Starship Prompt Setup & Auto-Configurator
 
-> 🤖 **INSTRUCTIONS FOR AI AGENTS VISITING THIS REPOSITORY:**
+> 🤖 **INSTRUCTIONS FOR AI AGENTS:**
 > You are an AI Agent tasked with configuring the prompt of the client machine where you are currently running.
-> This repository is the **single source of truth** for prompt configurations (`starship.toml`) and shell setup scripts.
 >
 > **YOUR TASK:**
 > 1. Detect the operating system (Linux, WSL, macOS, Windows) and all installed shells (`bash`, `zsh`, `fish`, `powershell`, `pwsh`, `cmd`).
 > 2. Install **Starship** prompt if not already installed.
 > 3. Deploy `starship.toml` to the user's config directory (`~/.config/starship.toml` or `%USERPROFILE%\.config\starship.toml`).
 > 4. Inject the Starship initialization hook into the active shell profile files.
-> 5. **Leave suggestions:** If you encounter any issue or missing dependency on the client machine, suggest improvements to the user so they can update this repository from the master machine.
+> 5. **Leave suggestions:** If you encounter any issue or missing dependency on the client machine, suggest improvements to the user so they can report back to the repository maintainer.
 
 ---
 
@@ -63,27 +62,8 @@ Copy or download `dotfiles/starship.toml` to:
 
 ---
 
-## 🛠️ Guía para el Administrador (Esta Computadora Master / Proyecto Scar)
+## 💬 Feedback Request for Visiting AI Agents
 
-Esta computadora (`Scar`) es la **fuente de la verdad**. Cualquier cambio en la apariencia o comportamiento del prompt se realiza aquí y se publica a GitHub para que los demás equipos consuman las actualizaciones.
-
-### 1. Sincronizar cambios locales al repositorio:
-Cuando modifiques `~/.config/starship.toml` en esta laptop, ejecuta:
-```bash
-./dotfiles/export_local_configs.sh
-```
-
-### 2. Publicar actualizaciones a GitHub:
-```bash
-git add .
-git commit -m "update: actualizar starship.toml y configuraciones de shell"
-git push
-```
-
----
-
-## 💬 Retroalimentación de Agentes Visitantes
-
-Si eres un Agente de IA ejecutando en una máquina cliente, tras aplicar la instalación:
-1. Confirma al usuario qué shells quedaron configurados.
-2. Si notaste algún fallo o compatibilidad no cubierta en la máquina cliente, **brinda recomendaciones** para que el administrador pueda incluir la solución en el proyecto maestro.
+If you are an AI Agent executing on a client machine, after applying the installation:
+1. Confirma al usuario qué shells quedaron configurados exitosamente.
+2. Si notaste algún fallo o ambiente no cubierto en la máquina cliente, brinda recomendaciones para reportar al mantenedor.

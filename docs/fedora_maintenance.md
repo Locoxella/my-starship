@@ -16,23 +16,19 @@
 2. Confirmación de reemplazos nativos: `Qrca` (`org.kde.qrca` en Flatpak) ya se encuentra activo como reemplazo.
 3. Creación del script ejecutable `remove_snap.sh` para purgar los paquetes RPM `snapd` y `discover-backend-snap`.
 
-#### Directivas para Futuras Sesiones
-* **NO reinstalar `snapd` ni `discover-backend-snap`.**
-* Utilizar **Flatpak** (`flathub`) para todo el software de escritorio o utilidades de usuario.
-* Mantener las actualizaciones del sistema mediante `dnf upgrade` o Discover con backends exclusivamente RPM/Flatpak.
-
 ---
 
-### [2026-07-30] Configuración y Publicación de `my-starship`
+### [2026-07-30] Mantenimiento Local de `my-starship` (Fuente de la Verdad)
 
-#### Arquitectura de Sincronización
-* **Fuente de la Verdad (Master):** Esta laptop (`Scar`). Aquí reside y se prueba el archivo `~/.config/starship.toml`.
-* **Repositorio Público GitHub:** `https://github.com/Locoxella/my-starship`
-* **Flujo de Publicación:**
-  1. Editar `~/.config/starship.toml`.
-  2. Ejecutar `./dotfiles/export_local_configs.sh` para copiar los cambios al repositorio.
-  3. Ejecutar `git add . && git commit -m "..." && git push` para actualizar la fuente pública.
-* **Consumidores (Otras computadoras / Agentes de IA):**
-  - Solo reciben la URL `https://github.com/Locoxella/my-starship`.
-  - El agente visitante lee la portada del README y ejecuta los instaladores automáticos (`setup_starship.sh`, `setup_starship.ps1`, `setup_starship_cmd.bat`).
+Esta computadora (`Scar`) es la **fuente de la verdad** para la configuración de Starship (`~/.config/starship.toml`).
 
+#### Guía Exclusiva para el Agente Local (Scar):
+- Para sincronizar los cambios locales de esta máquina hacia el repositorio antes de hacer push:
+  ```bash
+  ./scripts/sync_starship_local.sh
+  ```
+- Para publicar las actualizaciones en el repositorio remoto:
+  ```bash
+  git add . && git commit -m "update: actualizar starship.toml" && git push origin main
+  ```
+- **Nota de Limpieza:** El script de sincronización local `scripts/sync_starship_local.sh` y la guía del administrador permanecen **exclusivamente** en este documento interno (`docs/fedora_maintenance.md`) y la carpeta `scripts/` ignorada, sin exponerse en el `README.md` público que leen los consumidores.
