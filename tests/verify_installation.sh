@@ -105,29 +105,42 @@ write_github_summary() {
             [ -n "$FISH_SUM_1" ] && echo "| \`config.fish\` | \`${SHORT_HASH_F1}...\` | \`${SHORT_HASH_F2}...\` | $([ "$FISH_SUM_1" = "$FISH_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             echo ""
         fi
-        echo "### 🎥 Live Terminal Demonstration (Starship + eza + bat)"
+        local DISTRO_IMG="preview_fedora.gif"
+        if [ -f /etc/os-release ]; then
+            local DIST_ID=$(grep -E '^ID=' /etc/os-release | cut -d= -f2- | tr -d '"')
+            case "$DIST_ID" in
+                *ubuntu*) DISTRO_IMG="preview_ubuntu.gif" ;;
+                *debian*) DISTRO_IMG="preview_debian.gif" ;;
+                *arch*) DISTRO_IMG="preview_archlinux.gif" ;;
+                *suse*) DISTRO_IMG="preview_opensuse.gif" ;;
+                *fedora*) DISTRO_IMG="preview_fedora.gif" ;;
+                *) DISTRO_IMG="preview_fedora.gif" ;;
+            esac
+        fi
+
+        echo "### 🎥 Native Container Execution Demo (${DISTRO_NAME})"
         echo '<p align="center">'
-        echo '  <img src="https://raw.githubusercontent.com/Locoxella/my-starship/main/assets/tools_preview.gif" alt="Starship & Modern CLI Tools Demonstration" width="850" />'
+        echo "  <img src=\"https://raw.githubusercontent.com/Locoxella/my-starship/main/assets/${DISTRO_IMG}\" alt=\"${DISTRO_NAME} Terminal Preview\" width=\"850\" />"
         echo '</p>'
         echo ""
-        echo ""
-        echo "<details>"
-        echo "<summary><b>🖥️ Live Container Output Snippet (Click to expand)</b></summary>"
+        echo "### 🖥️ Native Shell Output from this Container (${DISTRO_NAME})"
         echo ""
         echo '```console'
-        echo "$ starship prompt --status 0"
-        TERM=xterm-256color STARSHIP_CONFIG="$HOME/.config/starship.toml" starship prompt --status 0 2>/dev/null || echo "❯ "
-        echo ""
-        echo "$ eza --icons --group-directories-first $HOME/.local/bin"
-        if command -v eza &>/dev/null; then
-            eza --icons "$HOME/.local/bin" 2>/dev/null | head -n 5
+        echo "# Container OS Identity (/etc/os-release):"
+        if [ -f /etc/os-release ]; then
+            grep -E '^(PRETTY_NAME|ID)=' /etc/os-release | tr -d '"'
         fi
         echo ""
-        echo "$ zoxide --version && fzf --version"
-        echo "${ZOXIDE_VER}"
-        echo "${FZF_VER}"
+        echo "# Live Starship prompt generated in this container:"
+        TERM=xterm-256color STARSHIP_CONFIG="$HOME/.config/starship.toml" starship prompt --status 0 2>/dev/null || echo "❯ "
+        echo ""
+        echo "# Verified tools inside this container:"
+        echo "starship: ${STARSHIP_VER}"
+        echo "zoxide:   ${ZOXIDE_VER}"
+        echo "fzf:      ${FZF_VER}"
+        echo "eza:      ${EZA_VER}"
+        echo "bat:      ${BAT_VER}"
         echo '```'
-        echo "</details>"
         echo ""
         echo "---"
     } >> "$GITHUB_STEP_SUMMARY"
