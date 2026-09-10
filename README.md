@@ -40,7 +40,7 @@ You are an AI Agent tasked with configuring the prompt on the client machine whe
    - Confirm which shells were successfully configured.
    - Run `starship --version` to confirm binary availability.
    - Remind the user to reload the active terminal (`source ~/.bashrc`, restart PowerShell, etc.).
-   - **Crucial:** Advise the user to configure a **Nerd Font** in their terminal application (e.g. Windows Terminal, Alacritty, Kitty, iTerm2, WezTerm) so all icons and Powerline glyphs (``, ``, ``, git symbols, OS logos) render correctly without missing-character boxes.
+   - **Crucial:** Advise the user to configure **Hack Nerd Font** in their terminal application (e.g. Windows Terminal, Alacritty, Kitty, iTerm2, WezTerm) so all Powerline chevrons, rounded pills, git branch icons, and OS logos render properly.
 
 ---
 
@@ -114,7 +114,7 @@ Append the hook if not already present in the target profile file:
 
 ### Step 5: Install Mandatory Fonts (Hack & FiraCode Nerd Fonts)
 
-A Nerd Font is strictly required to render Powerline symbols (``, ``, ``), Git status, and OS logos:
+A Nerd Font is strictly required to render Powerline symbols (chevrons, rounded pill caps), Git status, and OS logos:
 - **Hack Nerd Font:** Designated font for your terminal emulator / console.
 - **FiraCode Nerd Font:** Installed for VS Code and code editors.
 
