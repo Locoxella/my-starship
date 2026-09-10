@@ -18,13 +18,29 @@ following instructions at:
 https://raw.githubusercontent.com/Locoxella/my-starship/main/README.md
 
 Detect OS and shells. Run the automated
-installer, which also installs the required
-Hack & FiraCode Nerd Fonts if missing.
+installer to deploy Starship, required
+fonts, and bundled CLI tools (zoxide,
+fzf, eza, bat) safely without duplicates.
 
-Deploy the custom starship.toml config
-and remind me to select Hack Nerd Font
+Remind me to select Hack Nerd Font
 in my terminal emulator settings.
 ```
+
+---
+
+## 🧰 Bundled Modern CLI Tools
+
+To deliver a powerful, consistent terminal experience out-of-the-box, the automated setup also installs and configures 4 essential, cross-shell utilities:
+
+| Tool | Role | Description & Integration |
+| :--- | :--- | :--- |
+| **[`zoxide`](https://github.com/ajeetdsouza/zoxide)** | Smart Jump (`z`) | Ultra-fast directory jumper. Remembers your most frequent paths so you can jump with `z <folder>`. |
+| **[`fzf`](https://github.com/junegunn/fzf)** | Fuzzy Finder (`Ctrl+R`) | Interactive fuzzy search across command history, files, and git commits. |
+| **[`eza`](https://github.com/eza-community/eza)** | Modern `ls` | Drop-in replacement for `ls` with Nerd Font filetype icons, Git status indicators, and human-readable format. |
+| **[`bat`](https://github.com/sharkdp/bat)** | Modern `cat` | Syntax-highlighting file viewer with git modifications gutter integration. |
+
+> [!NOTE]
+> **Strict Idempotency Guarantee:** We take the liberty of configuring these utilities across all detected shells (Bash, Zsh, Fish, PowerShell). The configurator **always inspects your shell files first** and skips any tool, plugin (e.g. `jethrokuan/z`, `fzf.fish`), or alias that is already present to prevent duplicate hooks or broken environments.
 
 ---
 
@@ -87,7 +103,24 @@ Use this mode when you need to inspect or execute each step individually.
   scoop install starship
   ```
 
-### Step 3: Deploy Configuration File
+### Step 3: Install Bundled Modern CLI Tools
+Install `zoxide`, `fzf`, `eza`, and `bat` if not already installed:
+- **Linux / macOS:**
+  ```bash
+  # zoxide
+  command -v zoxide >/dev/null || curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+  # eza & bat & fzf (via system package manager if available, or official releases)
+  command -v fzf >/dev/null || (git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --bin)
+  ```
+- **Windows (Winget):**
+  ```powershell
+  winget install -e --id ajeetdsouza.zoxide
+  winget install -e --id junegunn.fzf
+  winget install -e --id eza-community.eza
+  winget install -e --id sharkdp.bat
+  ```
+
+### Step 4: Deploy Configuration File
 Download `dotfiles/starship.toml` to:
 - **Linux / WSL / macOS:** `~/.config/starship.toml`
   ```bash
@@ -99,20 +132,19 @@ Download `dotfiles/starship.toml` to:
   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/starship.toml" -OutFile "$HOME\.config\starship.toml"
   ```
 
-### Step 4: Inject Init Hook into Shell Profiles
+### Step 5: Inject Hooks & Aliases into Shell Profiles (Safe & Idempotent)
 
-Append the hook if not already present in the target profile file:
+Verify each tool is not already configured in your target profile before appending:
 
-| Shell | Platform | Target File | Integration Code |
+| Shell | Platform | Target File | Hooks & Aliases to Add (if missing) |
 | :--- | :--- | :--- | :--- |
-| **Bash** | Linux / WSL / macOS | `~/.bashrc` | `eval "$(starship init bash)"` |
-| **Zsh** | Linux / WSL / macOS | `~/.zshrc` | `eval "$(starship init zsh)"` |
-| **Fish** | Linux / WSL / macOS | `~/.config/fish/config.fish` | `starship init fish \| source` |
-| **PowerShell 5.1** | Windows | `$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` | `Invoke-Expression (&starship init powershell)` |
-| **PowerShell Core 7+** | Windows / Linux / macOS | `$PROFILE` (`Microsoft.PowerShell_profile.ps1`) | `Invoke-Expression (&starship init powershell)` |
+| **Bash** | Linux / WSL / macOS | `~/.bashrc` | `eval "$(starship init bash)"`<br>`eval "$(zoxide init bash)"`<br>`eval "$(fzf --bash)"`<br>`alias ls='eza --icons'`<br>`alias cat='bat -P --style plain'` |
+| **Zsh** | Linux / WSL / macOS | `~/.zshrc` | `eval "$(starship init zsh)"`<br>`eval "$(zoxide init zsh)"`<br>`eval "$(fzf --zsh)"`<br>`alias ls='eza --icons'`<br>`alias cat='bat -P --style plain'` |
+| **Fish** | Linux / WSL / macOS | `~/.config/fish/config.fish` | `starship init fish \| source`<br>`zoxide init fish \| source` (skip if `z` exists)<br>`fzf --fish \| source` (skip if `fzf.fish` exists)<br>`alias ls="eza --icons"`<br>`alias cat="bat -P --style plain"` |
+| **PowerShell** | Windows / Linux / macOS | `$PROFILE` | `Invoke-Expression (&starship init powershell)`<br>`Invoke-Expression (& { (zoxide init powershell \| Out-String) })` |
 | **CMD (Clink)** | Windows | `%LOCALAPPDATA%\clink\starship.lua` | `load(io.popen('starship init cmd'):read("*a"))()` |
 
-### Step 5: Install Mandatory Fonts (Hack & FiraCode Nerd Fonts)
+### Step 6: Install Mandatory Fonts (Hack & FiraCode Nerd Fonts)
 
 A Nerd Font is strictly required to render Powerline symbols (chevrons, rounded pill caps), Git status, and OS logos:
 - **Hack Nerd Font:** Designated font for your terminal emulator / console.
@@ -128,7 +160,7 @@ Execute the font installer for the target OS:
   winget install -e --id NerdFonts.Hack && winget install -e --id NerdFonts.FiraCode
   ```
 
-### Step 6: Reload Terminal & Apply Font Settings
+### Step 7: Reload Terminal & Apply Font Settings
 1. **Reload Shell:** Run `source ~/.bashrc` (or restart PowerShell / CMD).
 2. **Set Terminal Font:** Open terminal preferences (Windows Terminal, VS Code, Kitty, Alacritty, iTerm2, WezTerm) and select **Hack Nerd Font** as the font family.
 
@@ -138,7 +170,7 @@ Execute the font installer for the target OS:
 
 After completing the installation on the client machine, the AI agent should:
 1. ✅ Confirm which shells were successfully configured.
-2. ✅ Confirm that Starship and Hack/FiraCode Nerd Fonts are installed.
+2. ✅ Confirm that Starship, bundled CLI tools (zoxide, fzf, eza, bat), and Hack/FiraCode Nerd Fonts are installed.
 3. 🔄 Instruct the user to restart their terminal session or source their shell profile.
 4. 🔤 Remind the user to select **Hack Nerd Font** in their terminal emulator settings.
 5. 💡 If any unsupported environment was encountered, report suggested improvements to the maintainer.
