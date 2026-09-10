@@ -15,9 +15,11 @@ This document provides instructions, architecture guidelines, and operational wo
 
 ```text
 my-starship/
-├── .github/workflows/         # CI automation (syntax and config validation)
-│   └── validate.yml
+├── .github/workflows/         # CI automation
+│   ├── test-distros.yml       # Multi-distro container verification matrix
+│   └── validate.yml           # Syntax & TOML config validator
 ├── assets/                    # Visual presentation assets
+│   ├── demo.gif               # Animated VHS recording
 │   ├── demo.tape              # VHS declarative script for recording demo GIFs
 │   └── prompt_preview.svg     # Pre-rendered vector mockup of the prompt
 ├── dotfiles/                  # Publicly deployed artifacts (Single Source of Truth)
@@ -31,6 +33,9 @@ my-starship/
 ├── scripts/                   # Local maintainer scripts (ignored / internal)
 │   ├── maintenance/           # Host-specific maintenance scripts (e.g. remove_snap.sh)
 │   └── sync_starship_local.sh # Synchronizes ~/.config/starship.toml -> dotfiles/
+├── tests/                     # CI test suite & container bootstrap
+│   ├── bootstrap_distro.sh    # Prepares container environments (Fedora, Ubuntu, etc.)
+│   └── verify_installation.sh # Automated test suite (binaries, fonts, idempotence)
 ├── AGENTS.md                  # This file (AI maintainer instructions)
 └── README.md                  # Client & visiting-agent documentation
 ```
@@ -65,6 +70,11 @@ bash -n dotfiles/setup_starship.sh
 bash -n dotfiles/install_nerd_font.sh
 bash -n scripts/sync_starship_local.sh
 bash -n scripts/maintenance/remove_snap.sh
+bash -n tests/verify_installation.sh
+bash -n tests/bootstrap_distro.sh
+
+# Run local installation test suite
+./tests/verify_installation.sh
 ```
 
 ---

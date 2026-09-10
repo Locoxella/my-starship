@@ -28,4 +28,6 @@ jobs:
           bash -n dotfiles/install_nerd_font.sh
           bash -n scripts/sync_starship_local.sh
           bash -n scripts/maintenance/remove_snap.sh
+          bash -n tests/verify_installation.sh
+          bash -n tests/bootstrap_distro.sh
           echo "✓ Shell scripts syntax check passed."

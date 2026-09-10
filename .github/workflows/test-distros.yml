@@ -1,0 +1,83 @@
+name: Multi-Distro Verification Matrix
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      distro:
+        description: 'Select Linux distribution to test'
+        type: choice
+        options:
+          - 'all (Top 5 Distros)'
+          - 'fedora'
+          - 'ubuntu'
+          - 'debian'
+          - 'archlinux'
+          - 'opensuse'
+        default: 'all (Top 5 Distros)'
+      custom_image:
+        description: 'Optional custom Docker image:tag (e.g. fedora:40, ubuntu:22.04). Overrides selector.'
+        type: string
+        required: false
+        default: ''
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.set-matrix.outputs.images }}
+    steps:
+      - id: set-matrix
+        name: Determine images to test
+        run: |
+          CUSTOM="${{ inputs.custom_image }}"
+          DISTRO="${{ inputs.distro }}"
+
+          if [ -n "$CUSTOM" ]; then
+            echo "Custom image provided: $CUSTOM"
+            IMAGES="[\"$CUSTOM\"]"
+          elif [ "$DISTRO" = "fedora" ]; then
+            IMAGES='["fedora:latest"]'
+          elif [ "$DISTRO" = "ubuntu" ]; then
+            IMAGES='["ubuntu:latest"]'
+          elif [ "$DISTRO" = "debian" ]; then
+            IMAGES='["debian:latest"]'
+          elif [ "$DISTRO" = "archlinux" ]; then
+            IMAGES='["archlinux:latest"]'
+          elif [ "$DISTRO" = "opensuse" ]; then
+            IMAGES='["opensuse/tumbleweed:latest"]'
+          else
+            # Default for all or automated push/pull_request
+            IMAGES='["fedora:latest", "ubuntu:latest", "debian:latest", "archlinux:latest", "opensuse/tumbleweed:latest"]'
+          fi
+
+          echo "images=$IMAGES" >> "$GITHUB_OUTPUT"
+
+  test-distro:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJson(needs.generate-matrix.outputs.images) }}
+    container:
+      image: ${{ matrix.image }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Bootstrap container dependencies & shells
+        run: |
+          ./tests/bootstrap_distro.sh
+
+      - name: Run Starship & Tools Auto-Configurator
+        run: |
+          ./dotfiles/setup_starship.sh
+
+      - name: Execute Automated Test Suite (Binaries, Fonts, Hooks & Idempotency)
+        run: |
+          ./tests/verify_installation.sh
