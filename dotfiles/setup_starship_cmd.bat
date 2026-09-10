@@ -1,5 +1,5 @@
 @echo off
-REM Scar Dotfiles - Starship Auto-Configurator for Windows CMD (Command Prompt via Clink)
+REM my-starship - Starship Auto-Configurator for Windows CMD (Command Prompt via Clink)
 
 echo =================================================
 echo  🚀 Starship Shell Configurator (Windows CMD)

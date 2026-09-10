@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Scar Dotfiles - Starship Auto-Configurator for Linux/WSL/macOS
+# my-starship - Starship Auto-Configurator for Linux/WSL/macOS
 # Designed for autonomous AI Agents and users.
 
 set -e

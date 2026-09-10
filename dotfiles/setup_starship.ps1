@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Scar Dotfiles - Starship Auto-Configurator for Windows (PowerShell / WSL)
+    my-starship - Starship Auto-Configurator for Windows (PowerShell / WSL)
     Designed for autonomous AI Agents and Windows users.
 #>
 
@@ -74,7 +74,7 @@ $wslCmd = Get-Command wsl -ErrorAction SilentlyContinue
 if ($wslCmd) {
     Write-Host "[+] WSL detected! Offering automated WSL setup..." -ForegroundColor Cyan
     try {
-        wsl bash -c "curl -fsSL https://raw.githubusercontent.com/Locoxella/scar/main/dotfiles/setup_starship.sh | bash"
+        wsl bash -c "curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/setup_starship.sh | bash"
         Write-Host "[✓] WSL instances successfully updated with Starship!" -ForegroundColor Green
     } catch {
         Write-Host "[!] Could not configure WSL automatically: $_" -ForegroundColor Yellow

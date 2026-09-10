@@ -1,22 +1,47 @@
 # 🚀 Starship Prompt Setup & Auto-Configurator
 
-> 🤖 **INSTRUCTIONS FOR AI AGENTS:**
-> You are an AI Agent tasked with configuring the prompt of the client machine where you are currently running.
->
-> **YOUR TASK:**
-> 1. Detect the operating system (Linux, WSL, macOS, Windows) and all installed shells (`bash`, `zsh`, `fish`, `powershell`, `pwsh`, `cmd`).
-> 2. Install **Starship** prompt if not already installed.
-> 3. Deploy `starship.toml` to the user's config directory (`~/.config/starship.toml` or `%USERPROFILE%\.config\starship.toml`).
-> 4. Inject the Starship initialization hook into the active shell profile files.
-> 5. **Leave suggestions:** If you encounter any issue or missing dependency on the client machine, suggest improvements to the user so they can report back to the repository maintainer.
+Repositorio maestro y fuente de la verdad para la configuración de **Starship Prompt** (`starship.toml`) y scripts de despliegue automatizados para cualquier sistema operativo y shell.
 
 ---
 
-## ⚡ Quick One-Line Automated Installers for AI Agents
+## 📋 Prompt listo para copiar a tu Agente de IA (1-Click Copy)
 
-Execute the command for the current platform:
+Copia y pega este prompt directamente en el agente de IA que esté ejecutando en tu otra máquina (Cursor, Windsurf, Claude Code, ChatGPT, Gemini, Copilot, Aider, etc.):
 
-### 🐧 Linux / WSL / macOS (Bash / Zsh / Fish)
+```text
+Configura Starship prompt en esta máquina siguiendo las instrucciones de https://raw.githubusercontent.com/Locoxella/my-starship/main/README.md
+Detecta el sistema operativo y todos los shells instalados, ejecuta el instalador automatizado correspondiente (o sigue el protocolo paso a paso si hay restricciones en la terminal), aplica la configuración personalizada de starship.toml y recuérdame qué Nerd Font necesito para que los glifos de la terminal se vean correctamente.
+```
+
+*(English version)*:
+```text
+Configure Starship prompt on this machine following the instructions at https://raw.githubusercontent.com/Locoxella/my-starship/main/README.md
+Detect the OS and all installed shells, execute the corresponding one-line automated installer (or the step-by-step protocol if network piping is restricted), deploy the custom starship.toml config, and remind me which Nerd Font to configure in my terminal so all prompt glyphs render properly.
+```
+
+---
+
+## 🤖 Instructions for Visiting AI Agents
+
+You are an AI Agent tasked with configuring the prompt on the client machine where you are currently running.
+
+### Execution Workflow:
+1. **Choose your execution path:**
+   - **Mode A (Preferred / Express):** If you can execute shell commands with internet access, run the **Quick One-Line Automated Installer** for the detected OS. The scripts automatically detect installed shells, install Starship, copy the configuration, and configure profile files.
+   - **Mode B (Manual / Audited Protocol):** If network piping (`curl | bash` or `irm | iex`) is restricted or forbidden by your security policy, follow the **Step-by-Step AI Agent Execution Protocol** below.
+2. **Verify & Inform:**
+   - Confirm which shells were successfully configured.
+   - Run `starship --version` to confirm binary availability.
+   - Remind the user to reload the active terminal (`source ~/.bashrc`, restart PowerShell, etc.).
+   - **Crucial:** Advise the user to configure a **Nerd Font** in their terminal application (e.g. Windows Terminal, Alacritty, Kitty, iTerm2, WezTerm) so all icons and Powerline glyphs (``, ``, ``, git symbols, OS logos) render correctly without missing-character boxes.
+
+---
+
+## ⚡ Mode A: Quick One-Line Automated Installers
+
+Execute the command matching the client platform:
+
+### 🐧 Linux / WSL / macOS (Bash, Zsh, Fish, Pwsh)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/setup_starship.sh | bash
 ```
@@ -33,23 +58,43 @@ curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles
 
 ---
 
-## 📖 Step-by-Step AI Agent Execution Protocol
+## 📖 Mode B: Step-by-Step AI Agent Execution Protocol
+
+Use this mode when you need to inspect or execute each step individually.
 
 ### Step 1: Detect System & Shells
 - **Linux/WSL/macOS:** Run `which bash zsh fish pwsh 2>/dev/null`
 - **Windows:** Run `Get-Command bash, zsh, fish, pwsh, powershell, cmd, clink -ErrorAction SilentlyContinue`
 
 ### Step 2: Install Starship Binary
-- **Linux/WSL/macOS:** `curl -sS https://starship.rs/install.sh | sh -s -- -y`
-- **Windows (winget):** `winget install --id Starship.Starship -e --accept-source-agreements --accept-package-agreements`
-- **Windows (scoop):** `scoop install starship`
+- **Linux/WSL/macOS:**
+  ```bash
+  curl -sS https://starship.rs/install.sh | sh -s -- -y
+  ```
+- **Windows (winget):**
+  ```powershell
+  winget install --id Starship.Starship -e --accept-source-agreements --accept-package-agreements
+  ```
+- **Windows (scoop fallback):**
+  ```powershell
+  scoop install starship
+  ```
 
 ### Step 3: Deploy Configuration File
-Copy or download `dotfiles/starship.toml` to:
+Download `dotfiles/starship.toml` to:
 - **Linux / WSL / macOS:** `~/.config/starship.toml`
+  ```bash
+  mkdir -p ~/.config && curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/starship.toml -o ~/.config/starship.toml
+  ```
 - **Windows:** `%USERPROFILE%\.config\starship.toml`
+  ```powershell
+  New-Item -ItemType Directory -Path "$HOME\.config" -Force | Out-Null
+  Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/starship.toml" -OutFile "$HOME\.config\starship.toml"
+  ```
 
 ### Step 4: Inject Init Hook into Shell Profiles
+
+Append the hook if not already present in the target profile file:
 
 | Shell | Platform | Target File | Integration Code |
 | :--- | :--- | :--- | :--- |
@@ -62,8 +107,19 @@ Copy or download `dotfiles/starship.toml` to:
 
 ---
 
-## 💬 Feedback Request for Visiting AI Agents
+## 🔤 Font Requirement: Nerd Fonts
 
-If you are an AI Agent executing on a client machine, after applying the installation:
-1. Confirma al usuario qué shells quedaron configurados exitosamente.
-2. Si notaste algún fallo o ambiente no cubierto en la máquina cliente, brinda recomendaciones para reportar al mantenedor.
+This custom configuration heavily relies on Powerline glyphs and symbols.
+If icons look broken or appear as square boxes / question marks:
+1. Download and install a **Nerd Font** from [nerdfonts.com](https://www.nerdfonts.com/) (recommended: *JetBrains Mono Nerd Font*, *FiraCode Nerd Font*, or *MesloLGS NF*).
+2. Set that font in the terminal emulator settings (e.g. Windows Terminal, VS Code Terminal, Kitty, Alacritty, iTerm2).
+
+---
+
+## 💬 Agent Final Checklist & Feedback
+
+After installation, the AI agent should:
+1. ✅ Report which shells were successfully configured.
+2. 🔄 Instruct the user to restart their terminal session or source their shell profile.
+3. 🔤 Remind the user about the Nerd Font requirement if not already set up.
+4. 💡 If any unsupported environment or issue was encountered, output suggested improvements so the user can report them back to the repository maintainer.
