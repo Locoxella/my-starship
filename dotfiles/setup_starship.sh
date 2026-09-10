@@ -57,6 +57,11 @@ if ! command -v fzf &> /dev/null; then
     if [ ! -d "$HOME/.fzf" ]; then
         git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf" >/dev/null 2>&1 && \
         "$HOME/.fzf/install" --bin >/dev/null 2>&1 || true
+    elif [ ! -f "$HOME/.fzf/bin/fzf" ]; then
+        "$HOME/.fzf/install" --bin >/dev/null 2>&1 || true
+    fi
+    if [ -f "$HOME/.fzf/bin/fzf" ]; then
+        ln -sf "$HOME/.fzf/bin/fzf" "$LOCAL_BIN/fzf"
     fi
 else
     echo "[✓] fzf is already installed."
@@ -100,7 +105,8 @@ echo ""
 echo "[*] Configuring shell profiles..."
 
 # --- Bash ---
-if [ -f "$HOME/.bashrc" ]; then
+if [ -f "$HOME/.bashrc" ] || command -v bash &> /dev/null; then
+    touch "$HOME/.bashrc"
     # Ensure ~/.local/bin is in PATH
     if ! grep -q 'HOME/.local/bin' "$HOME/.bashrc" && ! grep -q '.local/bin' "$HOME/.bashrc"; then
         echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"

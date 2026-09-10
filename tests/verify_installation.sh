@@ -8,7 +8,7 @@ echo "========================================="
 echo " 🧪 Running Installation Test Suite"
 echo "========================================="
 
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.fzf/bin:$PATH"
 
 # 1. Check Binaries
 echo "[TEST 1/5] Checking required binaries..."
@@ -59,11 +59,18 @@ fi
 if [ -f "$HOME/.zshrc" ]; then
     grep -q 'starship init zsh' "$HOME/.zshrc" || (echo "[-] FAIL: starship hook missing from ~/.zshrc" && exit 1)
     grep -q 'zoxide init zsh' "$HOME/.zshrc" || (echo "[-] FAIL: zoxide hook missing from ~/.zshrc" && exit 1)
+    grep -q 'fzf' "$HOME/.zshrc" || (echo "[-] FAIL: fzf hook missing from ~/.zshrc" && exit 1)
+    grep -q 'alias ls=.*eza' "$HOME/.zshrc" || (echo "[-] FAIL: eza alias missing from ~/.zshrc" && exit 1)
+    grep -q 'alias cat=.*bat' "$HOME/.zshrc" || (echo "[-] FAIL: bat alias missing from ~/.zshrc" && exit 1)
     echo "  ✓ Zsh profile verified."
 fi
 
 if [ -f "$HOME/.config/fish/config.fish" ]; then
     grep -q 'starship init fish' "$HOME/.config/fish/config.fish" || (echo "[-] FAIL: starship hook missing from config.fish" && exit 1)
+    (grep -q 'zoxide init fish' "$HOME/.config/fish/config.fish" || grep -q 'jethrokuan/z' "$HOME/.config/fish/fish_plugins" 2>/dev/null || command -v z >/dev/null) || (echo "[-] FAIL: z / zoxide hook missing from config.fish" && exit 1)
+    (grep -q 'fzf' "$HOME/.config/fish/config.fish" || grep -q 'fzf.fish' "$HOME/.config/fish/fish_plugins" 2>/dev/null) || (echo "[-] FAIL: fzf hook missing from config.fish" && exit 1)
+    grep -q 'alias ls=' "$HOME/.config/fish/config.fish" || (echo "[-] FAIL: eza alias missing from config.fish" && exit 1)
+    grep -q 'alias cat=' "$HOME/.config/fish/config.fish" || (echo "[-] FAIL: bat alias missing from config.fish" && exit 1)
     echo "  ✓ Fish profile verified."
 fi
 
