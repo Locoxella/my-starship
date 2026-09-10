@@ -14,7 +14,7 @@
 #### Solución Aplicada
 1. Eliminación de paquetes Snap de usuario (`qr-code-generator-desktop`).
 2. Confirmación de reemplazos nativos: `Qrca` (`org.kde.qrca` en Flatpak) ya se encuentra activo como reemplazo.
-3. Creación del script ejecutable `remove_snap.sh` para purgar los paquetes RPM `snapd` y `discover-backend-snap`.
+3. Creación del script ejecutable `scripts/maintenance/remove_snap.sh` para purgar los paquetes RPM `snapd` y `discover-backend-snap`.
 
 ---
 

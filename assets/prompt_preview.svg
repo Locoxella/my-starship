@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 340" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;display=swap');
+      .term-bg { fill: #1e1e2e; rx: 12px; }
+      .term-header { fill: #181825; }
+      .circle-red { fill: #f38ba8; }
+      .circle-yellow { fill: #f9e2af; }
+      .circle-green { fill: #a6e3a1; }
+      .title { fill: #cdd6f4; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; text-anchor: middle; }
+      .txt { font-family: 'JetBrains Mono', 'FiraCode Nerd Font', 'Fira Code', monospace; font-size: 14px; }
+      .txt-bold { font-weight: 700; }
+      .crust { fill: #11111b; }
+      .text-light { fill: #cdd6f4; }
+      .text-sub { fill: #a6adc8; }
+      .text-green { fill: #a6e3a1; }
+    </style>
+  </defs>
+
+  <!-- Window Frame -->
+  <rect width="980" height="340" class="term-bg" />
+  <path d="M0,12 C0,5.37 5.37,0 12,0 L968,0 C974.63,0 980,5.37 980,12 L980,38 L0,38 Z" class="term-header" />
+  <circle cx="24" cy="19" r="6" class="circle-red" />
+  <circle cx="44" cy="19" r="6" class="circle-yellow" />
+  <circle cx="64" cy="19" r="6" class="circle-green" />
+  <text x="490" y="24" class="title">locoxella@scar: ~/repos/my-starship</text>
+
+  <!-- Prompt Line 1 -->
+  <g transform="translate(30, 85)">
+    <!-- Pill 1: OS & User (Red) -->
+    <path d="M 12 0 C 5.37 0 0 5.37 0 12 C 0 18.63 5.37 24 12 24 L 115 24 L 127 12 L 115 0 Z" fill="#f38ba8" />
+    <text x="14" y="16.5" class="txt txt-bold crust">󰣛 locoxella</text>
+
+    <!-- Pill 2: Directory (Peach) -->
+    <path d="M 115 0 L 127 12 L 115 24 L 290 24 L 302 12 L 290 0 Z" fill="#fab387" />
+    <text x="135" y="16.5" class="txt txt-bold crust">…/my-starship</text>
+
+    <!-- Pill 3: Git (Yellow) -->
+    <path d="M 290 0 L 302 12 L 290 24 L 400 24 L 412 12 L 400 0 Z" fill="#f9e2af" />
+    <text x="310" y="16.5" class="txt txt-bold crust"> main</text>
+
+    <!-- Pill 4: Language / Python (Green) -->
+    <path d="M 400 0 L 412 12 L 400 24 L 495 24 L 507 12 L 495 0 Z" fill="#a6e3a1" />
+    <text x="420" y="16.5" class="txt txt-bold crust">󰌠 3.14</text>
+
+    <!-- Pill 5: Time (Lavender) -->
+    <path d="M 495 0 L 507 12 L 495 24 L 585 24 C 591.63 24 597 18.63 597 12 C 597 5.37 591.63 0 585 0 Z" fill="#b4befe" />
+    <text x="515" y="16.5" class="txt txt-bold crust"> 17:58</text>
+  </g>
+
+  <!-- Prompt Line 2 & Command -->
+  <g transform="translate(30, 130)">
+    <text x="0" y="0" class="txt txt-bold text-green">❯</text>
+    <text x="20" y="0" class="txt text-light">git status</text>
+  </g>
+
+  <!-- Command Output -->
+  <g transform="translate(30, 160)">
+    <text x="0" y="0" class="txt text-sub">On branch main</text>
+    <text x="0" y="22" class="txt text-sub">Your branch is up to date with 'origin/main'.</text>
+    <text x="0" y="44" class="txt text-green">nothing to commit, working tree clean</text>
+  </g>
+
+  <!-- Prompt Line Next -->
+  <g transform="translate(30, 245)">
+    <!-- Pill 1: OS & User (Red) -->
+    <path d="M 12 0 C 5.37 0 0 5.37 0 12 C 0 18.63 5.37 24 12 24 L 115 24 L 127 12 L 115 0 Z" fill="#f38ba8" />
+    <text x="14" y="16.5" class="txt txt-bold crust">󰣛 locoxella</text>
+
+    <!-- Pill 2: Directory (Peach) -->
+    <path d="M 115 0 L 127 12 L 115 24 L 290 24 L 302 12 L 290 0 Z" fill="#fab387" />
+    <text x="135" y="16.5" class="txt txt-bold crust">…/my-starship</text>
+
+    <!-- Pill 3: Git (Yellow) -->
+    <path d="M 290 0 L 302 12 L 290 24 L 400 24 L 412 12 L 400 0 Z" fill="#f9e2af" />
+    <text x="310" y="16.5" class="txt txt-bold crust"> main</text>
+
+    <!-- Pill 4: Time (Lavender) -->
+    <path d="M 400 0 L 412 12 L 400 24 L 490 24 C 496.63 24 502 18.63 502 12 C 502 5.37 496.63 0 490 0 Z" fill="#b4befe" />
+    <text x="420" y="16.5" class="txt txt-bold crust"> 17:59</text>
+  </g>
+
+  <!-- Prompt Line Active -->
+  <g transform="translate(30, 290)">
+    <text x="0" y="0" class="txt txt-bold text-green">❯</text>
+    <rect x="18" y="-14" width="9" height="18" fill="#cdd6f4" opacity="0.8" />
+  </g>
+</svg>

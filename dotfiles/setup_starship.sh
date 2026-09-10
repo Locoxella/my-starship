@@ -94,6 +94,31 @@ if command -v pwsh &> /dev/null; then
     fi
 fi
 
+# 4. Check for Nerd Font availability
+echo ""
+echo "[*] Verifying Nerd Font installation..."
+HAS_NERD_FONT=false
+
+if command -v fc-list &> /dev/null; then
+    if fc-list : family | grep -qiE 'nerd|nf'; then
+        HAS_NERD_FONT=true
+    fi
+elif [ "$(uname)" = "Darwin" ]; then
+    if find ~/Library/Fonts /Library/Fonts -iname "*nerd*" 2>/dev/null | grep -q .; then
+        HAS_NERD_FONT=true
+    fi
+fi
+
+if [ "$HAS_NERD_FONT" = true ]; then
+    echo "[✓] Nerd Font detected in system fonts!"
+else
+    echo "[!] Notice: No Nerd Font detected in your system fonts."
+    echo "    To render prompt icons (, , , git symbols, etc.) correctly without broken glyphs,"
+    echo "    please install a Nerd Font (recommended: JetBrains Mono Nerd Font or FiraCode NF):"
+    echo "    👉 https://www.nerdfonts.com/font-downloads"
+    echo "    And configure it as the font in your terminal emulator preferences."
+fi
+
 echo "================================================="
 echo " ✨ Starship configuration successfully applied!"
 echo "================================================="

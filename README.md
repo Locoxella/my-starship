@@ -2,6 +2,10 @@
 
 Repositorio maestro y fuente de la verdad para la configuración de **Starship Prompt** (`starship.toml`) y scripts de despliegue automatizados para cualquier sistema operativo y shell.
 
+<p align="center">
+  <img src="assets/prompt_preview.svg" alt="Starship Prompt Preview" width="100%">
+</p>
+
 ---
 
 ## 📋 Prompt listo para copiar a tu Agente de IA (1-Click Copy)
@@ -109,10 +113,29 @@ Append the hook if not already present in the target profile file:
 
 ## 🔤 Font Requirement: Nerd Fonts
 
-This custom configuration heavily relies on Powerline glyphs and symbols.
+This custom configuration heavily relies on Powerline glyphs and symbols (``, ``, ``, git symbols, OS icons).
 If icons look broken or appear as square boxes / question marks:
-1. Download and install a **Nerd Font** from [nerdfonts.com](https://www.nerdfonts.com/) (recommended: *JetBrains Mono Nerd Font*, *FiraCode Nerd Font*, or *MesloLGS NF*).
-2. Set that font in the terminal emulator settings (e.g. Windows Terminal, VS Code Terminal, Kitty, Alacritty, iTerm2).
+
+- **Windows (Winget):**
+  ```powershell
+  winget install -e --id NerdFonts.JetBrainsMono
+  ```
+- **Linux / macOS (Automated Script):**
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/install_nerd_font.sh | bash
+  ```
+- **Manual Download:** [nerdfonts.com/font-downloads](https://www.nerdfonts.com/font-downloads) (recommended: *JetBrains Mono Nerd Font*, *FiraCode Nerd Font*, or *MesloLGS NF*).
+
+> **Important:** Remember to select the installed Nerd Font in your terminal emulator settings (Windows Terminal, VS Code, Kitty, Alacritty, iTerm2, WezTerm).
+
+---
+
+## 🎬 Terminal Session Recording (VHS)
+
+The repository includes a [VHS](https://github.com/charmbracelet/vhs) tape configuration in [`assets/demo.tape`](assets/demo.tape). You can generate an animated demo GIF anytime by running:
+```bash
+vhs assets/demo.tape
+```
 
 ---
 

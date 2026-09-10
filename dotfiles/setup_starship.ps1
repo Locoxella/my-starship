@@ -81,6 +81,26 @@ if ($wslCmd) {
     }
 }
 
+# 5. Check for Nerd Font availability
+Write-Host ""
+Write-Host "[*] Verifying Nerd Font installation in Windows..." -ForegroundColor Cyan
+try {
+    $installedFonts = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -ErrorAction SilentlyContinue).PSObject.Properties.Value
+    $userFonts = (Get-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -ErrorAction SilentlyContinue).PSObject.Properties.Value
+    $hasNerdFont = ($installedFonts -match "Nerd|NF") -or ($userFonts -match "Nerd|NF")
+} catch {
+    $hasNerdFont = $false
+}
+
+if ($hasNerdFont) {
+    Write-Host "[✓] Nerd Font detected in Windows!" -ForegroundColor Green
+} else {
+    Write-Host "[!] Notice: No Nerd Font found in system fonts." -ForegroundColor Yellow
+    Write-Host "    To render prompt icons (, , , git symbols, etc.) correctly," -ForegroundColor Yellow
+    Write-Host "    install a Nerd Font (e.g., winget install -e --id NerdFonts.JetBrainsMono)" -ForegroundColor Yellow
+    Write-Host "    or download from: https://www.nerdfonts.com/font-downloads" -ForegroundColor Gray
+}
+
 Write-Host "=================================================" -ForegroundColor Cyan
 Write-Host " ✨ Starship configuration successfully applied!" -ForegroundColor Cyan
 Write-Host "=================================================" -ForegroundColor Cyan

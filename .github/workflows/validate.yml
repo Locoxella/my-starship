@@ -1,0 +1,31 @@
+name: Validate Starship Config & Scripts
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Starship
+        run: |
+          curl -sS https://starship.rs/install.sh | sh -s -- -y
+
+      - name: Validate Starship Configuration Syntax
+        run: |
+          STARSHIP_CONFIG=dotfiles/starship.toml starship print-config > /dev/null
+          echo "✓ starship.toml syntax is valid."
+
+      - name: Validate Shell Scripts Syntax
+        run: |
+          bash -n dotfiles/setup_starship.sh
+          bash -n dotfiles/install_nerd_font.sh
+          bash -n scripts/sync_starship_local.sh
+          bash -n scripts/maintenance/remove_snap.sh
+          echo "✓ Shell scripts syntax check passed."
