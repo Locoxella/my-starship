@@ -134,18 +134,9 @@ If icons look broken or appear as square boxes / question marks:
 
 ---
 
-## 🎬 Terminal Session Recording (VHS)
+## 💬 Visiting Agent Final Checklist
 
-The repository includes a [VHS](https://github.com/charmbracelet/vhs) tape configuration in [`assets/demo.tape`](assets/demo.tape). You can generate an animated demo GIF anytime by running:
-```bash
-vhs assets/demo.tape
-```
-
----
-
-## 💬 Agent Final Checklist & Feedback
-
-After installation, the AI agent should:
+After completing the installation on the client machine, the AI agent should:
 1. ✅ Report which shells were successfully configured.
 2. 🔄 Instruct the user to restart their terminal session or source their shell profile.
 3. 🔤 Remind the user about the Nerd Font requirement if not already set up.
