@@ -79,5 +79,18 @@ jobs:
           ./dotfiles/setup_starship.sh
 
       - name: Execute Automated Test Suite (Binaries, Fonts, Hooks & Idempotency)
+        env:
+          TARGET_IMAGE: ${{ matrix.image }}
         run: |
           ./tests/verify_installation.sh
+
+      - name: Report Early Setup Failure
+        if: failure()
+        run: |
+          if [ -n "$GITHUB_STEP_SUMMARY" ] && [ ! -f /tmp/.summary_written ]; then
+            echo "## 📦 Container Execution Failed: \`${{ matrix.image }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "> ❌ **Failed during container bootstrap or tool configuration before test suite execution.**" >> "$GITHUB_STEP_SUMMARY"
+            echo "Please inspect the preceding step logs for details." >> "$GITHUB_STEP_SUMMARY"
+            echo "---" >> "$GITHUB_STEP_SUMMARY"
+          fi
