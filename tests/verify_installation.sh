@@ -91,7 +91,7 @@ write_github_summary() {
         echo "| Component | Target Path | Configuration Details | Status |"
         echo "| :--- | :--- | :--- | :--- |"
         echo "| **Fonts** | Hack & FiraCode Nerd Fonts | ${FONT_DETAILS} | ${FONT_STATUS} |"
-        echo "| **Config** | \`~/.config/starship.toml\` | Parsed via \`starship print-config\` | $([ -f "$HOME/.config/starship.toml" ] && echo "✅ Valid" || echo "❌ Missing") |"
+        echo "| **Config** | \`~/.config/starship.toml\` | Parsed via \`starship print-config\` | $([ -f "$HOME/.config/starship.toml" ] && echo "✅ Verified (Valid syntax)" || echo "❌ Missing") |"
         echo "| **Bash** | \`~/.bashrc\` | Starship hook, zoxide, fzf, eza & bat aliases | ${BASH_STATUS} |"
         echo "| **Zsh** | \`~/.zshrc\` | Starship hook, zoxide, fzf, eza & bat aliases | ${ZSH_STATUS} |"
         echo "| **Fish** | \`~/.config/fish/config.fish\` | Starship hook, zoxide/z, fzf, aliases | ${FISH_STATUS} |"
@@ -105,13 +105,11 @@ write_github_summary() {
             [ -n "$FISH_SUM_1" ] && echo "| \`config.fish\` | \`${SHORT_HASH_F1}...\` | \`${SHORT_HASH_F2}...\` | $([ "$FISH_SUM_1" = "$FISH_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             echo ""
         fi
-        echo "<details>"
-        echo "<summary><b>🖼️ Visual Console Snapshot (Starship + eza)</b></summary>"
-        echo ""
+        echo "### 🎥 Live Terminal Demonstration (Starship + eza + bat)"
         echo '<p align="center">'
-        echo '  <img src="https://raw.githubusercontent.com/Locoxella/my-starship/main/assets/tools_preview.png" alt="Console Tools Preview" width="850" />'
+        echo '  <img src="https://raw.githubusercontent.com/Locoxella/my-starship/main/assets/tools_preview.gif" alt="Starship & Modern CLI Tools Demonstration" width="850" />'
         echo '</p>'
-        echo "</details>"
+        echo ""
         echo ""
         echo "<details>"
         echo "<summary><b>🖥️ Live Container Output Snippet (Click to expand)</b></summary>"
