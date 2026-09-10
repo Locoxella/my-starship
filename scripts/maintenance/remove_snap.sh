@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Script para remover completamente snapd y el backend de Discover en Fedora
+# Script to completely remove snapd and the Discover backend on Fedora
 
 set -e
 
-echo "===> Deteniendo servicios de snapd..."
+echo "===> Stopping snapd services..."
 sudo systemctl disable --now snapd.socket snapd.service snapd.apparmor.service 2>/dev/null || true
 
-echo "===> Desinstalando paquetes RPM de snapd y el complemento de Discover..."
+echo "===> Removing snapd RPM packages and Discover plugin..."
 sudo dnf remove -y snapd discover-backend-snap
 
-echo "===> Limpiando directorios residuales de Snap..."
+echo "===> Cleaning up residual Snap directories..."
 sudo rm -rf /var/lib/snapd /snap ~/snap
 
-echo "===> Proceso finalizado exitosamente. Snap ha sido completamente removido de Fedora."
+echo "===> Process finished successfully. Snap has been completely removed from Fedora."

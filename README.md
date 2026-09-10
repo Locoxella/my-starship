@@ -1,6 +1,6 @@
 # 🚀 Starship Prompt Setup & Auto-Configurator
 
-Repositorio maestro y fuente de la verdad para la configuración de **Starship Prompt** (`starship.toml`) y scripts de despliegue automatizados para cualquier sistema operativo y shell.
+Master repository and single source of truth for **Starship Prompt** configuration (`starship.toml`) and automated deployment scripts across all operating systems and shells.
 
 <p align="center">
   <img src="assets/prompt_preview.svg" alt="Starship Prompt Preview" width="100%">
@@ -8,19 +8,23 @@ Repositorio maestro y fuente de la verdad para la configuración de **Starship P
 
 ---
 
-## 📋 Prompt listo para copiar a tu Agente de IA (1-Click Copy)
+## 📋 1-Click Prompt for your AI Agent
 
-Copia y pega este prompt directamente en el agente de IA que esté ejecutando en tu otra máquina (Cursor, Windsurf, Claude Code, ChatGPT, Gemini, Copilot, Aider, etc.):
+Copy and paste this prompt directly into the AI agent running on your target machine (Cursor, Windsurf, Claude Code, ChatGPT, Gemini, Copilot, Aider, etc.):
 
 ```text
-Configura Starship prompt en esta máquina siguiendo las instrucciones de https://raw.githubusercontent.com/Locoxella/my-starship/main/README.md
-Detecta el sistema operativo y todos los shells instalados, ejecuta el instalador automatizado correspondiente (o sigue el protocolo paso a paso si hay restricciones en la terminal), aplica la configuración personalizada de starship.toml y recuérdame qué Nerd Font necesito para que los glifos de la terminal se vean correctamente.
-```
+Configure Starship prompt on this machine
+following instructions at:
+https://raw.githubusercontent.com/Locoxella/my-starship/main/README.md
 
-*(English version)*:
-```text
-Configure Starship prompt on this machine following the instructions at https://raw.githubusercontent.com/Locoxella/my-starship/main/README.md
-Detect the OS and all installed shells, execute the corresponding one-line automated installer (or the step-by-step protocol if network piping is restricted), deploy the custom starship.toml config, and remind me which Nerd Font to configure in my terminal so all prompt glyphs render properly.
+Detect the OS and all installed shells.
+Execute the matching automated installer
+(or follow step-by-step protocol if
+piping commands is restricted).
+
+Deploy the custom starship.toml config
+and remind me which Nerd Font to set
+in my terminal so glyphs render properly.
 ```
 
 ---
