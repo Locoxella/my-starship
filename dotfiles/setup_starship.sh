@@ -47,6 +47,31 @@ echo "[*] Verifying bundled CLI tools..."
 if ! command -v zoxide &> /dev/null; then
     echo "[+] Installing zoxide..."
     curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash 2>/dev/null || true
+    if ! command -v zoxide &> /dev/null; then
+        TEMP_ZOXIDE="$(mktemp -d)"
+        ARCH="$(uname -m)"
+        OS="$(uname)"
+        ZOXIDE_VER=$(curl -sI https://github.com/ajeetdsouza/zoxide/releases/latest 2>/dev/null | grep -i '^location:' | sed 's/.*tag\/v*//' | tr -d '\r\n')
+        ZOXIDE_VER="${ZOXIDE_VER:-0.10.0}"
+        ZOXIDE_PKG=""
+        if [ "$OS" = "Linux" ]; then
+            if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "aarch64" ]; then
+                ZOXIDE_PKG="zoxide-${ZOXIDE_VER}-${ARCH}-unknown-linux-musl.tar.gz"
+            fi
+        elif [ "$OS" = "Darwin" ]; then
+            if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "arm64" ]; then
+                [ "$ARCH" = "arm64" ] && ARCH="aarch64"
+                ZOXIDE_PKG="zoxide-${ZOXIDE_VER}-${ARCH}-apple-darwin.tar.gz"
+            fi
+        fi
+        if [ -n "$ZOXIDE_PKG" ]; then
+            curl -fsSL "https://github.com/ajeetdsouza/zoxide/releases/download/v${ZOXIDE_VER}/${ZOXIDE_PKG}" -o "$TEMP_ZOXIDE/zoxide.tar.gz" 2>/dev/null && \
+            tar -xzf "$TEMP_ZOXIDE/zoxide.tar.gz" -C "$TEMP_ZOXIDE" 2>/dev/null && \
+            cp "$TEMP_ZOXIDE/zoxide" "$LOCAL_BIN/zoxide" 2>/dev/null && \
+            chmod +x "$LOCAL_BIN/zoxide" 2>/dev/null || true
+        fi
+        rm -rf "$TEMP_ZOXIDE"
+    fi
 else
     echo "[✓] zoxide is already installed."
 fi
