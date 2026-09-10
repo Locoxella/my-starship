@@ -80,7 +80,7 @@ write_github_summary() {
         echo ""
         echo "### 🛠️ Modern CLI Tools & Detected Versions"
         echo "| Tool | Binary Command | Detected Version | Validation |"
-        echo "| :--- | :--- | :--- | :---: |"
+        echo "| :--- | :--- | :--- | :--- |"
         echo "| 🚀 **Starship Prompt** | \`starship\` | \`${STARSHIP_VER}\` | $(command -v starship &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
         echo "| ⚡ **zoxide** | \`zoxide\` | \`${ZOXIDE_VER}\` | $(command -v zoxide &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
         echo "| 🔍 **fzf** | \`fzf\` | \`${FZF_VER}\` | $(command -v fzf &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
@@ -89,7 +89,7 @@ write_github_summary() {
         echo ""
         echo "### 🔤 Typography & Shell Configurations"
         echo "| Component | Target Path | Configuration Details | Status |"
-        echo "| :--- | :--- | :--- | :---: |"
+        echo "| :--- | :--- | :--- | :--- |"
         echo "| **Fonts** | Hack & FiraCode Nerd Fonts | ${FONT_DETAILS} | ${FONT_STATUS} |"
         echo "| **Config** | \`~/.config/starship.toml\` | Parsed via \`starship print-config\` | $([ -f "$HOME/.config/starship.toml" ] && echo "✅ Valid" || echo "❌ Missing") |"
         echo "| **Bash** | \`~/.bashrc\` | Starship hook, zoxide, fzf, eza & bat aliases | ${BASH_STATUS} |"
@@ -99,12 +99,38 @@ write_github_summary() {
         if [ -n "$BASHRC_SUM_1" ] || [ -n "$ZSHRC_SUM_1" ] || [ -n "$FISH_SUM_1" ]; then
             echo "### 🔒 Strict Idempotency Assertion (2nd Run Proof)"
             echo "| Profile File | Initial Run SHA-256 | Second Run SHA-256 | Idempotency Guarantee |"
-            echo "| :--- | :--- | :--- | :---: |"
+            echo "| :--- | :--- | :--- | :--- |"
             [ -n "$BASHRC_SUM_1" ] && echo "| \`~/.bashrc\` | \`${SHORT_HASH_B1}...\` | \`${SHORT_HASH_B2}...\` | $([ "$BASHRC_SUM_1" = "$BASHRC_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             [ -n "$ZSHRC_SUM_1" ] && echo "| \`~/.zshrc\` | \`${SHORT_HASH_Z1}...\` | \`${SHORT_HASH_Z2}...\` | $([ "$ZSHRC_SUM_1" = "$ZSHRC_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             [ -n "$FISH_SUM_1" ] && echo "| \`config.fish\` | \`${SHORT_HASH_F1}...\` | \`${SHORT_HASH_F2}...\` | $([ "$FISH_SUM_1" = "$FISH_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             echo ""
         fi
+        echo "<details>"
+        echo "<summary><b>🖼️ Visual Console Snapshot (Starship + eza)</b></summary>"
+        echo ""
+        echo '<p align="center">'
+        echo '  <img src="https://raw.githubusercontent.com/Locoxella/my-starship/main/assets/tools_preview.png" alt="Console Tools Preview" width="850" />'
+        echo '</p>'
+        echo "</details>"
+        echo ""
+        echo "<details>"
+        echo "<summary><b>🖥️ Live Container Output Snippet (Click to expand)</b></summary>"
+        echo ""
+        echo '```console'
+        echo "$ starship prompt --status 0"
+        TERM=xterm-256color STARSHIP_CONFIG="$HOME/.config/starship.toml" starship prompt --status 0 2>/dev/null || echo "❯ "
+        echo ""
+        echo "$ eza --icons --group-directories-first $HOME/.local/bin"
+        if command -v eza &>/dev/null; then
+            eza --icons "$HOME/.local/bin" 2>/dev/null | head -n 5
+        fi
+        echo ""
+        echo "$ zoxide --version && fzf --version"
+        echo "${ZOXIDE_VER}"
+        echo "${FZF_VER}"
+        echo '```'
+        echo "</details>"
+        echo ""
         echo "---"
     } >> "$GITHUB_STEP_SUMMARY"
 }
