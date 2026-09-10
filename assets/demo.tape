@@ -9,7 +9,7 @@ Set FontSize 16
 Set Width 960
 Set Height 420
 Set Padding 20
-Set FontFamily "JetBrainsMono Nerd Font"
+Set FontFamily "Hack Nerd Font"
 Set Theme "Catppuccin Mocha"
 
 # Setup custom Starship prompt inside recording session

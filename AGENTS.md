@@ -21,7 +21,7 @@ my-starship/
 │   ├── demo.tape              # VHS declarative script for recording demo GIFs
 │   └── prompt_preview.svg     # Pre-rendered vector mockup of the prompt
 ├── dotfiles/                  # Publicly deployed artifacts (Single Source of Truth)
-│   ├── install_nerd_font.sh   # Automated JetBrains Mono NF installer
+│   ├── install_nerd_font.sh   # Automated Hack & FiraCode NF installer
 │   ├── setup_starship.ps1     # Windows PowerShell auto-configurator
 │   ├── setup_starship.sh      # Linux/macOS/WSL auto-configurator
 │   ├── setup_starship_cmd.bat # Windows Command Prompt (Clink) installer
@@ -73,3 +73,4 @@ bash -n scripts/maintenance/remove_snap.sh
 1. **Keep Public URLs Intact:** Client scripts in `dotfiles/` must continue to work when fetched via `curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/...`
 2. **Idempotence:** Every setup script must be safe to run multiple times without duplicating shell hooks or corrupting profile files.
 3. **Multi-Platform Support:** When altering `starship.toml` or setup scripts, ensure compatibility across Linux, WSL, macOS, Windows PowerShell, and CMD.
+4. **Font Standards:** Always use **Hack Nerd Font** for terminal/console tasks and **FiraCode Nerd Font** for code editors/IDEs. Never use or assume JetBrains Mono.

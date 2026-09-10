@@ -17,14 +17,13 @@ Configure Starship prompt on this machine
 following instructions at:
 https://raw.githubusercontent.com/Locoxella/my-starship/main/README.md
 
-Detect the OS and all installed shells.
-Execute the matching automated installer
-(or follow step-by-step protocol if
-piping commands is restricted).
+Detect OS and shells. Run the automated
+installer, which also installs the required
+Hack & FiraCode Nerd Fonts if missing.
 
 Deploy the custom starship.toml config
-and remind me which Nerd Font to set
-in my terminal so glyphs render properly.
+and remind me to select Hack Nerd Font
+in my terminal emulator settings.
 ```
 
 ---
@@ -115,29 +114,33 @@ Append the hook if not already present in the target profile file:
 
 ---
 
-## 🔤 Font Requirement: Nerd Fonts
+## 🔤 Mandatory Fonts: Hack & FiraCode Nerd Fonts
 
-This custom configuration heavily relies on Powerline glyphs and symbols (``, ``, ``, git symbols, OS icons).
-If icons look broken or appear as square boxes / question marks:
+> [!IMPORTANT]
+> A Nerd Font is **strictly required** for Starship prompt to render Powerline symbols (``, ``, ``), Git icons, and OS logos. Without a Nerd Font, glyphs will display as missing boxes or question marks.
 
+The automated setup scripts (`setup_starship.sh` and `setup_starship.ps1`) **automatically detect and install Hack & FiraCode Nerd Fonts** if no Nerd Font is found on the system:
+- **Hack Nerd Font:** The designated font for your terminal emulator / console.
+- **FiraCode Nerd Font:** Installed for VS Code and other editors/apps.
+
+### Standalone Font Installation (Optional):
 - **Windows (Winget):**
   ```powershell
-  winget install -e --id NerdFonts.JetBrainsMono
+  winget install -e --id NerdFonts.Hack && winget install -e --id NerdFonts.FiraCode
   ```
 - **Linux / macOS (Automated Script):**
   ```bash
   curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/install_nerd_font.sh | bash
   ```
-- **Manual Download:** [nerdfonts.com/font-downloads](https://www.nerdfonts.com/font-downloads) (recommended: *JetBrains Mono Nerd Font*, *FiraCode Nerd Font*, or *MesloLGS NF*).
 
-> **Important:** Remember to select the installed Nerd Font in your terminal emulator settings (Windows Terminal, VS Code, Kitty, Alacritty, iTerm2, WezTerm).
+> **User Action Required:** After installation, open your terminal emulator preferences (Windows Terminal, VS Code, Kitty, Alacritty, iTerm2, WezTerm) and select **Hack Nerd Font** as the font family.
 
 ---
 
 ## 💬 Visiting Agent Final Checklist
 
 After completing the installation on the client machine, the AI agent should:
-1. ✅ Report which shells were successfully configured.
+1. ✅ Confirm that Starship and Hack/FiraCode Nerd Fonts were successfully installed.
 2. 🔄 Instruct the user to restart their terminal session or source their shell profile.
-3. 🔤 Remind the user about the Nerd Font requirement if not already set up.
+3. 🔤 Remind the user to select **Hack Nerd Font** in their terminal emulator settings.
 4. 💡 If any unsupported environment or issue was encountered, output suggested improvements so the user can report them back to the repository maintainer.

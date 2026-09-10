@@ -81,7 +81,7 @@ if ($wslCmd) {
     }
 }
 
-# 5. Check for Nerd Font availability
+# 5. Check for Nerd Font availability (Automatic Install)
 Write-Host ""
 Write-Host "[*] Verifying Nerd Font installation in Windows..." -ForegroundColor Cyan
 try {
@@ -95,10 +95,15 @@ try {
 if ($hasNerdFont) {
     Write-Host "[✓] Nerd Font detected in Windows!" -ForegroundColor Green
 } else {
-    Write-Host "[!] Notice: No Nerd Font found in system fonts." -ForegroundColor Yellow
-    Write-Host "    To render prompt icons (, , , git symbols, etc.) correctly," -ForegroundColor Yellow
-    Write-Host "    install a Nerd Font (e.g., winget install -e --id NerdFonts.JetBrainsMono)" -ForegroundColor Yellow
-    Write-Host "    or download from: https://www.nerdfonts.com/font-downloads" -ForegroundColor Gray
+    Write-Host "[!] No Nerd Font detected. Installing Hack & FiraCode Nerd Fonts via winget..." -ForegroundColor Yellow
+    try {
+        winget install -e --id NerdFonts.Hack --accept-source-agreements --accept-package-agreements
+        winget install -e --id NerdFonts.FiraCode --accept-source-agreements --accept-package-agreements
+        Write-Host "[✓] Hack & FiraCode Nerd Fonts installed successfully!" -ForegroundColor Green
+    } catch {
+        Write-Host "[!] Could not install fonts via winget automatically: $_" -ForegroundColor Yellow
+        Write-Host "    Download manually from: https://www.nerdfonts.com/font-downloads" -ForegroundColor Gray
+    }
 }
 
 Write-Host "=================================================" -ForegroundColor Cyan

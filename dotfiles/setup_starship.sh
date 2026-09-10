@@ -94,7 +94,7 @@ if command -v pwsh &> /dev/null; then
     fi
 fi
 
-# 4. Check for Nerd Font availability
+# 4. Check for Nerd Font availability (Automatic Install)
 echo ""
 echo "[*] Verifying Nerd Font installation..."
 HAS_NERD_FONT=false
@@ -112,11 +112,12 @@ fi
 if [ "$HAS_NERD_FONT" = true ]; then
     echo "[✓] Nerd Font detected in system fonts!"
 else
-    echo "[!] Notice: No Nerd Font detected in your system fonts."
-    echo "    To render prompt icons (, , , git symbols, etc.) correctly without broken glyphs,"
-    echo "    please install a Nerd Font (recommended: JetBrains Mono Nerd Font or FiraCode NF):"
-    echo "    👉 https://www.nerdfonts.com/font-downloads"
-    echo "    And configure it as the font in your terminal emulator preferences."
+    echo "[!] No Nerd Font detected. Automatically installing Hack & FiraCode Nerd Fonts..."
+    if [ -f "$SCRIPT_DIR/install_nerd_font.sh" ]; then
+        bash "$SCRIPT_DIR/install_nerd_font.sh"
+    else
+        curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/install_nerd_font.sh | bash
+    fi
 fi
 
 echo "================================================="

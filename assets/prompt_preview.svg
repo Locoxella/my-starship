@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 340" width="100%" height="100%">
   <defs>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&amp;display=swap');
       .term-bg { fill: #1e1e2e; rx: 12px; }
       .term-header { fill: #181825; }
       .circle-red { fill: #f38ba8; }
       .circle-yellow { fill: #f9e2af; }
       .circle-green { fill: #a6e3a1; }
-      .title { fill: #cdd6f4; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; text-anchor: middle; }
-      .txt { font-family: 'JetBrains Mono', 'FiraCode Nerd Font', 'Fira Code', monospace; font-size: 14px; }
+      .title { fill: #cdd6f4; font-family: 'Hack Nerd Font', 'Fira Code', monospace; font-size: 13px; font-weight: 600; text-anchor: middle; }
+      .txt { font-family: 'Hack Nerd Font', 'FiraCode Nerd Font', 'Fira Code', monospace; font-size: 14px; }
       .txt-bold { font-weight: 700; }
       .crust { fill: #11111b; }
       .text-light { fill: #cdd6f4; }
