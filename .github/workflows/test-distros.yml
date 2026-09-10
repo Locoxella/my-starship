@@ -68,7 +68,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Bootstrap container dependencies & shells
         run: |
@@ -84,6 +84,21 @@ jobs:
         run: |
           ./tests/verify_installation.sh
 
+      - name: Prepare Artifact Name
+        if: always()
+        id: art
+        run: |
+          SAFE_NAME=$(echo "${{ matrix.image }}" | tr '/:' '--')
+          echo "name=live-log-$SAFE_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Container Live Log Artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.art.outputs.name }}
+          path: /tmp/live_container_*.log
+          if-no-files-found: ignore
+
       - name: Report Early Setup Failure
         if: failure()
         run: |
@@ -94,3 +109,33 @@ jobs:
             echo "Please inspect the preceding step logs for details." >> "$GITHUB_STEP_SUMMARY"
             echo "---" >> "$GITHUB_STEP_SUMMARY"
           fi
+
+  record-live-demo:
+    name: Record Live VHS Demo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install System Dependencies & VHS
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg ttyd fastfetch
+          curl -fsSL https://github.com/charmbracelet/vhs/releases/download/v0.12.0/vhs_0.12.0_Linux_x86_64.tar.gz | tar -xz
+          sudo install -m 755 vhs_0.12.0_Linux_x86_64/vhs /usr/local/bin/vhs
+          vhs --version
+
+      - name: Run Starship & Tools Auto-Configurator
+        run: |
+          ./dotfiles/setup_starship.sh
+
+      - name: Render Live VHS Tape
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          vhs assets/demo.tape
+
+      - name: Upload Live VHS Demo Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: live-vhs-demo
+          path: assets/demo.gif
