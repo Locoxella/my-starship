@@ -3,7 +3,7 @@
 Master repository and single source of truth for **Starship Prompt** configuration (`starship.toml`) and automated deployment scripts across all operating systems and shells.
 
 <p align="center">
-  <img src="assets/prompt_preview.svg" alt="Starship Prompt Preview" width="100%">
+  <img src="assets/demo.gif" alt="Starship Prompt Animated Demo" width="100%">
 </p>
 
 ---
