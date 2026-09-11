@@ -93,15 +93,15 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: preview-${{ steps.art.outputs.name }}
-          path: /tmp/previews/*.gif
-          if-no-files-found: ignore
+          path: ci-artifacts/previews/*.gif
+          if-no-files-found: error
 
       - name: Upload Container Live Log Artifact
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: live-log-${{ steps.art.outputs.name }}
-          path: /tmp/live_container_*.log
+          path: ci-artifacts/logs/*.log
           if-no-files-found: ignore
 
   publish-live-previews:
@@ -111,23 +111,29 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout repository
+      - name: Checkout ci-previews branch
         uses: actions/checkout@v7
+        with:
+          ref: ci-previews
 
       - name: Download All Preview Artifacts
         uses: actions/download-artifact@v7
         with:
-          path: /tmp/downloaded-artifacts
+          path: downloaded-artifacts
 
       - name: Push Previews to ci-previews Branch
         if: github.ref == 'refs/heads/main'
         run: |
+          mkdir -p previews
+          find downloaded-artifacts -type f -name "preview_*.gif" -exec cp -vf {} previews/ \;
+          ls -la previews/
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin ci-previews
-          git checkout ci-previews
-          mkdir -p previews
-          find /tmp/downloaded-artifacts -name "preview_*.gif" -exec cp {} previews/ \;
           git add previews/
-          git commit -m "chore(ci): update live distro previews for run ${{ github.run_id }} [skip ci]" || echo "No preview changes to commit"
-          git push origin ci-previews --force
+          git status
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(ci): update live distro previews for run ${{ github.run_id }} [skip ci]"
+            git push origin ci-previews --force
+          else
+            echo "No preview changes to commit"
+          fi

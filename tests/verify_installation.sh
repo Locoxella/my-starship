@@ -118,16 +118,19 @@ write_github_summary() {
             esac
         fi
 
+        local CACHE_KEY="${GITHUB_RUN_ID:-${GITHUB_SHA:-live}}"
         echo "### 🎥 Native Container Execution Demo (${DISTRO_NAME})"
         echo '<p align="left">'
-        echo "  <img src=\"https://raw.githubusercontent.com/Locoxella/my-starship/ci-previews/previews/${DISTRO_IMG}?v=${GITHUB_SHA:-live}\" alt=\"${DISTRO_NAME} Terminal Preview\" width=\"850\" />"
+        echo "  <img src=\"https://raw.githubusercontent.com/Locoxella/my-starship/ci-previews/previews/${DISTRO_IMG}?v=${CACHE_KEY}\" alt=\"${DISTRO_NAME} Terminal Preview\" width=\"850\" />"
         echo '</p>'
         echo ""
         echo "---"
     } >> "$GITHUB_STEP_SUMMARY"
 
     # Also preserve container log as artifact
-    local LOG_TARGET="/tmp/live_container_${DIST_ID:-generic}.log"
+    local LOG_DIR="${CONTAINER_LOG_DIR:-/tmp}"
+    mkdir -p "$LOG_DIR" 2>/dev/null || true
+    local LOG_TARGET="${LOG_DIR}/live_container_${DIST_ID:-generic}.log"
     {
         echo "=== Container Live Execution Output: ${DISTRO_NAME} ==="
         echo "starship: ${STARSHIP_VER}"
@@ -136,6 +139,7 @@ write_github_summary() {
         echo "eza:      ${EZA_VER}"
         echo "bat:      ${BAT_VER}"
     } > "$LOG_TARGET" 2>&1 || true
+    [ "$LOG_DIR" != "/tmp" ] && cp -f "$LOG_TARGET" "/tmp/live_container_${DIST_ID:-generic}.log" 2>/dev/null || true
 }
 
 trap 'write_github_summary' EXIT

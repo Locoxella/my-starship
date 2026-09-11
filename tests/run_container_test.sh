@@ -30,20 +30,30 @@ docker exec "$CID" /repo/tests/bootstrap_distro.sh
 echo "[2/4] Installing Starship & Modern CLI Tools..."
 docker exec "$CID" /repo/dotfiles/setup_starship.sh
 
+PREVIEWS_DIR="$PWD/ci-artifacts/previews"
+LOGS_DIR="$PWD/ci-artifacts/logs"
+mkdir -p "$PREVIEWS_DIR" "$LOGS_DIR"
+
 echo "[3/4] Running Automated Test Suite..."
-docker exec -e GITHUB_STEP_SUMMARY=/tmp/summary.md "$CID" /repo/tests/verify_installation.sh
+docker exec \
+    -e GITHUB_STEP_SUMMARY=/tmp/summary.md \
+    -e GITHUB_SHA="$GITHUB_SHA" \
+    -e GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+    -e TARGET_IMAGE="$IMAGE" \
+    -e CONTAINER_LOG_DIR="/repo/ci-artifacts/logs" \
+    "$CID" /repo/tests/verify_installation.sh
 
 # Copy summary and log from container to host
 if [ -n "$GITHUB_STEP_SUMMARY" ]; then
     docker exec "$CID" cat /tmp/summary.md >> "$GITHUB_STEP_SUMMARY"
 fi
-docker cp "$CID:/tmp/live_container_${NAME}.log" "/tmp/live_container_${NAME}.log" 2>/dev/null || true
+docker exec "$CID" sh -c "cp -f /tmp/live_container_*.log /repo/ci-artifacts/logs/ 2>/dev/null || true"
+cp -f "$LOGS_DIR"/*.log /tmp/ 2>/dev/null || true
 
 echo "[4/4] Recording Live VHS Demo inside $NAME container..."
-mkdir -p /tmp/previews
 TAPE="/tmp/record_${NAME}.tape"
 cat << TAPE_EOF > "$TAPE"
-Output "/tmp/previews/preview_${NAME}.gif"
+Output "$PREVIEWS_DIR/preview_${NAME}.gif"
 Set Shell "bash"
 Set FontSize 14
 Set Width 900
@@ -73,5 +83,7 @@ Sleep 2s
 TAPE_EOF
 
 vhs "$TAPE"
+mkdir -p /tmp/previews
+cp -f "$PREVIEWS_DIR/preview_${NAME}.gif" /tmp/previews/ 2>/dev/null || true
 docker rm -f "$CID"
-echo "[✓] Complete: Successfully generated /tmp/previews/preview_${NAME}.gif"
+echo "[✓] Complete: Successfully generated $PREVIEWS_DIR/preview_${NAME}.gif"
