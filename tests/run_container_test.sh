@@ -82,7 +82,18 @@ Enter
 Sleep 2s
 TAPE_EOF
 
-vhs "$TAPE"
+if command -v xvfb-run &>/dev/null; then
+    xvfb-run -a vhs "$TAPE"
+else
+    vhs "$TAPE"
+fi
+
+ls -la "$PREVIEWS_DIR"
+if [ ! -f "$PREVIEWS_DIR/preview_${NAME}.gif" ]; then
+    echo "[-] Error: Failed to generate $PREVIEWS_DIR/preview_${NAME}.gif"
+    exit 1
+fi
+
 mkdir -p /tmp/previews
 cp -f "$PREVIEWS_DIR/preview_${NAME}.gif" /tmp/previews/ 2>/dev/null || true
 docker rm -f "$CID"
