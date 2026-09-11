@@ -82,8 +82,12 @@ Enter
 Sleep 2s
 TAPE_EOF
 
+export VHS_NO_SANDBOX=true
+export CI=""
+export COLORTERM="truecolor"
+
 if command -v xvfb-run &>/dev/null; then
-    xvfb-run -a vhs "$TAPE"
+    xvfb-run -a -s "-screen 0 1920x1080x24" vhs "$TAPE"
 else
     vhs "$TAPE"
 fi

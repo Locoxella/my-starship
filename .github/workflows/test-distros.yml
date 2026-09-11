@@ -70,7 +70,7 @@ jobs:
       - name: Install VHS & Host Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y ffmpeg xvfb wget
+          sudo apt-get install -y ffmpeg xvfb wget libgl1-mesa-dri
           wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
           rm -f google-chrome-stable_current_amd64.deb
