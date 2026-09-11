@@ -28,6 +28,7 @@ jobs:
           bash -n dotfiles/install_nerd_font.sh
           bash -n tests/verify_installation.sh
           bash -n tests/bootstrap_distro.sh
+          bash -n tests/run_container_test.sh
           echo "✓ Shell scripts syntax check passed."
 
       - name: Generate Validation Summary
@@ -46,6 +47,7 @@ jobs:
           | `dotfiles/install_nerd_font.sh` | Hack & FiraCode Font Installer | `bash -n` parser | ✅ Syntax OK |
           | `tests/verify_installation.sh` | Automated Test Suite | `bash -n` parser | ✅ Syntax OK |
           | `tests/bootstrap_distro.sh` | Container Environment Bootstrapper | `bash -n` parser | ✅ Syntax OK |
+          | `tests/run_container_test.sh` | Multi-Distro Container & VHS Runner | `bash -n` parser | ✅ Syntax OK |
 
           ---
           EOF

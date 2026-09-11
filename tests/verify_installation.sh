@@ -120,36 +120,8 @@ write_github_summary() {
 
         echo "### 🎥 Native Container Execution Demo (${DISTRO_NAME})"
         echo '<p align="left">'
-        echo "  <img src=\"https://raw.githubusercontent.com/Locoxella/my-starship/main/assets/${DISTRO_IMG}\" alt=\"${DISTRO_NAME} Terminal Preview\" width=\"850\" />"
+        echo "  <img src=\"https://raw.githubusercontent.com/Locoxella/my-starship/ci-previews/previews/${DISTRO_IMG}?v=${GITHUB_SHA:-live}\" alt=\"${DISTRO_NAME} Terminal Preview\" width=\"850\" />"
         echo '</p>'
-        echo ""
-        echo "### 🖥️ Native Shell Output from this Container (${DISTRO_NAME})"
-        echo ""
-        echo '```console'
-        if command -v fastfetch &>/dev/null; then
-            echo "$ fastfetch"
-            fastfetch --pipe false --structure Title:OS:Host:Kernel:Shell:Terminal 2>/dev/null || true
-            echo ""
-        elif [ -f /etc/os-release ]; then
-            echo "# Container OS Identity (/etc/os-release):"
-            grep -E '^(PRETTY_NAME|ID)=' /etc/os-release | tr -d '"'
-            echo ""
-        fi
-        echo "$ starship prompt --status 0"
-        TERM=xterm-256color STARSHIP_CONFIG="$HOME/.config/starship.toml" starship prompt --status 0 2>/dev/null || echo "❯ "
-        echo ""
-        if command -v eza &>/dev/null; then
-            echo "$ eza --icons --group-directories-first dotfiles/"
-            eza --icons --group-directories-first dotfiles/ 2>/dev/null || true
-            echo ""
-        fi
-        echo "# Verified tools inside this container:"
-        echo "starship: ${STARSHIP_VER}"
-        echo "zoxide:   ${ZOXIDE_VER}"
-        echo "fzf:      ${FZF_VER}"
-        echo "eza:      ${EZA_VER}"
-        echo "bat:      ${BAT_VER}"
-        echo '```'
         echo ""
         echo "---"
     } >> "$GITHUB_STEP_SUMMARY"
@@ -158,14 +130,6 @@ write_github_summary() {
     local LOG_TARGET="/tmp/live_container_${DIST_ID:-generic}.log"
     {
         echo "=== Container Live Execution Output: ${DISTRO_NAME} ==="
-        if command -v fastfetch &>/dev/null; then
-            fastfetch --pipe false --structure Title:OS:Host:Kernel:Shell:Terminal 2>/dev/null || true
-        fi
-        echo ""
-        echo "Starship Prompt:"
-        TERM=xterm-256color STARSHIP_CONFIG="$HOME/.config/starship.toml" starship prompt --status 0 2>/dev/null || echo "❯ "
-        echo ""
-        echo "Tools Installed:"
         echo "starship: ${STARSHIP_VER}"
         echo "zoxide:   ${ZOXIDE_VER}"
         echo "fzf:      ${FZF_VER}"

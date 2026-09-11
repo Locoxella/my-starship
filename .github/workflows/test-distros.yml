@@ -50,7 +50,6 @@ jobs:
           elif [ "$DISTRO" = "opensuse" ]; then
             IMAGES='["opensuse/tumbleweed:latest"]'
           else
-            # Default for all or automated push/pull_request
             IMAGES='["fedora:latest", "ubuntu:latest", "debian:latest", "archlinux:latest", "opensuse/tumbleweed:latest"]'
           fi
 
@@ -63,84 +62,72 @@ jobs:
       fail-fast: false
       matrix:
         image: ${{ fromJson(needs.generate-matrix.outputs.images) }}
-    container:
-      image: ${{ matrix.image }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Bootstrap container dependencies & shells
+      - name: Install VHS & Host Dependencies
         run: |
-          ./tests/bootstrap_distro.sh
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg
+          sudo curl -fsSL https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 -o /usr/local/bin/ttyd
+          sudo chmod +x /usr/local/bin/ttyd
+          curl -fsSL https://github.com/charmbracelet/vhs/releases/download/v0.12.0/vhs_0.12.0_Linux_x86_64.tar.gz | tar -xz
+          sudo install -m 755 vhs_0.12.0_Linux_x86_64/vhs /usr/local/bin/vhs
+          ./dotfiles/install_nerd_font.sh
 
-      - name: Run Starship & Tools Auto-Configurator
+      - name: Test Container & Record Live VHS Demo
         run: |
-          ./dotfiles/setup_starship.sh
-
-      - name: Execute Automated Test Suite (Binaries, Fonts, Hooks & Idempotency)
-        env:
-          TARGET_IMAGE: ${{ matrix.image }}
-        run: |
-          ./tests/verify_installation.sh
+          ./tests/run_container_test.sh "${{ matrix.image }}"
 
       - name: Prepare Artifact Name
         if: always()
         id: art
         run: |
           SAFE_NAME=$(echo "${{ matrix.image }}" | tr '/:' '--')
-          echo "name=live-log-$SAFE_NAME" >> "$GITHUB_OUTPUT"
+          echo "name=$SAFE_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Live Preview GIF Artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: preview-${{ steps.art.outputs.name }}
+          path: /tmp/previews/*.gif
+          if-no-files-found: ignore
 
       - name: Upload Container Live Log Artifact
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ steps.art.outputs.name }}
+          name: live-log-${{ steps.art.outputs.name }}
           path: /tmp/live_container_*.log
           if-no-files-found: ignore
 
-      - name: Report Early Setup Failure
-        if: failure()
-        run: |
-          if [ -n "$GITHUB_STEP_SUMMARY" ] && [ ! -f /tmp/.summary_written ]; then
-            echo "## 📦 Container Execution Failed: \`${{ matrix.image }}\`" >> "$GITHUB_STEP_SUMMARY"
-            echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "> ❌ **Failed during container bootstrap or tool configuration before test suite execution.**" >> "$GITHUB_STEP_SUMMARY"
-            echo "Please inspect the preceding step logs for details." >> "$GITHUB_STEP_SUMMARY"
-            echo "---" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-  record-live-demo:
-    name: Record Live VHS Demo
+  publish-live-previews:
+    name: Publish Live Previews to ci-previews
+    needs: test-distro
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Install System Dependencies & VHS
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y ffmpeg
-          sudo curl -fsSL https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 -o /usr/local/bin/ttyd
-          sudo chmod +x /usr/local/bin/ttyd
-          curl -fsSL https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-amd64.deb -o /tmp/fastfetch.deb
-          sudo dpkg -i /tmp/fastfetch.deb
-          curl -fsSL https://github.com/charmbracelet/vhs/releases/download/v0.12.0/vhs_0.12.0_Linux_x86_64.tar.gz | tar -xz
-          sudo install -m 755 vhs_0.12.0_Linux_x86_64/vhs /usr/local/bin/vhs
-          vhs --version
-          fastfetch --version
-
-      - name: Run Starship & Tools Auto-Configurator
-        run: |
-          ./dotfiles/setup_starship.sh
-
-      - name: Render Live VHS Tape
-        run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          vhs assets/demo.tape
-
-      - name: Upload Live VHS Demo Artifact
-        uses: actions/upload-artifact@v7
+      - name: Download All Preview Artifacts
+        uses: actions/download-artifact@v7
         with:
-          name: live-vhs-demo
-          path: assets/demo.gif
+          path: /tmp/downloaded-artifacts
+
+      - name: Push Previews to ci-previews Branch
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin ci-previews
+          git checkout ci-previews
+          mkdir -p previews
+          find /tmp/downloaded-artifacts -name "preview_*.gif" -exec cp {} previews/ \;
+          git add previews/
+          git commit -m "chore(ci): update live distro previews for run ${{ github.run_id }} [skip ci]" || echo "No preview changes to commit"
+          git push origin ci-previews --force
