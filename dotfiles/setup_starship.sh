@@ -355,6 +355,11 @@ if command -v pwsh &> /dev/null; then
     PWSH_PROFILE="$PWSH_PROFILE_DIR/Microsoft.PowerShell_profile.ps1"
     touch "$PWSH_PROFILE"
 
+    # Ensure ~/.local/bin is in PATH
+    if ! grep -q 'HOME/\.local/bin' "$PWSH_PROFILE" && ! grep -q '\.local/bin' "$PWSH_PROFILE"; then
+        echo 'if ($env:PATH -notlike "*$HOME/.local/bin*") { $env:PATH = "$HOME/.local/bin:$env:PATH" }' >> "$PWSH_PROFILE"
+    fi
+
     # Starship
     if ! grep -q 'starship init powershell' "$PWSH_PROFILE"; then
         echo "[+] Injecting Starship hook into $PWSH_PROFILE"
@@ -373,6 +378,36 @@ if command -v pwsh &> /dev/null; then
             echo 'Invoke-Expression (& { (zoxide init powershell | Out-String) })' >> "$PWSH_PROFILE"
         else
             echo "[✓] PowerShell: zoxide already configured."
+        fi
+    fi
+
+    # eza
+    if command -v eza &> /dev/null; then
+        if ! grep -q 'function ls .*eza' "$PWSH_PROFILE" && ! grep -q 'function ls { eza' "$PWSH_PROFILE"; then
+            echo "[+] Injecting eza functions into $PWSH_PROFILE"
+            echo '# eza aliases' >> "$PWSH_PROFILE"
+            echo 'function ls { eza --icons $args }' >> "$PWSH_PROFILE"
+            echo 'function ll { eza -l -g --icons $args }' >> "$PWSH_PROFILE"
+            echo 'function la { eza -a --icons $args }' >> "$PWSH_PROFILE"
+        else
+            echo "[✓] PowerShell: eza functions already configured."
+        fi
+    fi
+
+    # bat
+    if command -v bat &> /dev/null || command -v batcat &> /dev/null; then
+        if ! grep -q 'function cat .*bat' "$PWSH_PROFILE" && ! grep -q 'function cat { bat' "$PWSH_PROFILE"; then
+            echo "[+] Injecting bat functions into $PWSH_PROFILE"
+            echo '# bat aliases' >> "$PWSH_PROFILE"
+            if command -v bat &> /dev/null; then
+                echo 'function cat { bat -P --style plain $args }' >> "$PWSH_PROFILE"
+                echo 'function less { bat $args }' >> "$PWSH_PROFILE"
+            else
+                echo 'function cat { batcat -P --style plain $args }' >> "$PWSH_PROFILE"
+                echo 'function less { batcat $args }' >> "$PWSH_PROFILE"
+            fi
+        else
+            echo "[✓] PowerShell: bat functions already configured."
         fi
     fi
 fi

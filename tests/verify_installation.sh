@@ -23,6 +23,7 @@ write_github_summary() {
     local FZF_VER=$(command -v fzf &>/dev/null && fzf --version 2>/dev/null | head -n 1 || echo "Not found")
     local EZA_VER=$(command -v eza &>/dev/null && eza --version 2>/dev/null | head -n 1 || echo "Not found")
     local BAT_VER=$(command -v bat &>/dev/null && bat --version 2>/dev/null | head -n 1 || (command -v batcat &>/dev/null && batcat --version 2>/dev/null | head -n 1) || echo "Not found")
+    local PWSH_VER=$(command -v pwsh &>/dev/null && pwsh --version 2>/dev/null | head -n 1 || echo "Not found")
 
     local FONT_STATUS="❌ Missing"
     local FONT_DETAILS="No Nerd Fonts detected"
@@ -62,12 +63,24 @@ write_github_summary() {
         fi
     fi
 
+    local PWSH_STATUS="⚪ Not configured"
+    local PWSH_PROFILE="$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1"
+    if [ -f "$PWSH_PROFILE" ]; then
+        if grep -q 'starship init powershell' "$PWSH_PROFILE"; then
+            PWSH_STATUS="✅ Verified (Prompt + 4 Tools)"
+        else
+            PWSH_STATUS="❌ Incomplete"
+        fi
+    fi
+
     local SHORT_HASH_B1="${BASHRC_SUM_1:0:16}"
     local SHORT_HASH_B2="${BASHRC_SUM_2:0:16}"
     local SHORT_HASH_Z1="${ZSHRC_SUM_1:0:16}"
     local SHORT_HASH_Z2="${ZSHRC_SUM_2:0:16}"
     local SHORT_HASH_F1="${FISH_SUM_1:0:16}"
     local SHORT_HASH_F2="${FISH_SUM_2:0:16}"
+    local SHORT_HASH_P1="${PWSH_SUM_1:0:16}"
+    local SHORT_HASH_P2="${PWSH_SUM_2:0:16}"
 
     {
         echo "## 📦 ${DISTRO_NAME} (\`${TARGET_IMAGE:-$(uname -m)}\`)"
@@ -86,6 +99,7 @@ write_github_summary() {
         echo "| 🔍 **fzf** | \`fzf\` | \`${FZF_VER}\` | $(command -v fzf &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
         echo "| 🗂️ **eza** | \`eza\` | \`${EZA_VER}\` | $(command -v eza &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
         echo "| 🦇 **bat** | \`bat\` | \`${BAT_VER}\` | $((command -v bat || command -v batcat) &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
+        echo "| 🐚 **PowerShell** | \`pwsh\` | \`${PWSH_VER}\` | $(command -v pwsh &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
         echo ""
         echo "### 🔤 Typography & Shell Configurations"
         echo "| Component | Target Path | Configuration Details | Status |"
@@ -95,14 +109,16 @@ write_github_summary() {
         echo "| **Bash** | \`~/.bashrc\` | Starship hook, zoxide, fzf, eza & bat aliases | ${BASH_STATUS} |"
         echo "| **Zsh** | \`~/.zshrc\` | Starship hook, zoxide, fzf, eza & bat aliases | ${ZSH_STATUS} |"
         echo "| **Fish** | \`~/.config/fish/config.fish\` | Starship hook, zoxide/z, fzf, aliases | ${FISH_STATUS} |"
+        echo "| **PowerShell** | \`~/.config/powershell/Microsoft.PowerShell_profile.ps1\` | Starship hook, zoxide, eza & bat aliases | ${PWSH_STATUS} |"
         echo ""
-        if [ -n "$BASHRC_SUM_1" ] || [ -n "$ZSHRC_SUM_1" ] || [ -n "$FISH_SUM_1" ]; then
+        if [ -n "$BASHRC_SUM_1" ] || [ -n "$ZSHRC_SUM_1" ] || [ -n "$FISH_SUM_1" ] || [ -n "$PWSH_SUM_1" ]; then
             echo "### 🔒 Strict Idempotency Assertion (2nd Run Proof)"
             echo "| Profile File | Initial Run SHA-256 | Second Run SHA-256 | Idempotency Guarantee |"
             echo "| :--- | :--- | :--- | :--- |"
             [ -n "$BASHRC_SUM_1" ] && echo "| \`~/.bashrc\` | \`${SHORT_HASH_B1}...\` | \`${SHORT_HASH_B2}...\` | $([ "$BASHRC_SUM_1" = "$BASHRC_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             [ -n "$ZSHRC_SUM_1" ] && echo "| \`~/.zshrc\` | \`${SHORT_HASH_Z1}...\` | \`${SHORT_HASH_Z2}...\` | $([ "$ZSHRC_SUM_1" = "$ZSHRC_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             [ -n "$FISH_SUM_1" ] && echo "| \`config.fish\` | \`${SHORT_HASH_F1}...\` | \`${SHORT_HASH_F2}...\` | $([ "$FISH_SUM_1" = "$FISH_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
+            [ -n "$PWSH_SUM_1" ] && echo "| \`profile.ps1\` | \`${SHORT_HASH_P1}...\` | \`${SHORT_HASH_P2}...\` | $([ "$PWSH_SUM_1" = "$PWSH_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             echo ""
         fi
         local DISTRO_IMG="preview_fedora.gif"
@@ -138,6 +154,7 @@ write_github_summary() {
         echo "fzf:      ${FZF_VER}"
         echo "eza:      ${EZA_VER}"
         echo "bat:      ${BAT_VER}"
+        echo "pwsh:     ${PWSH_VER}"
     } > "$LOG_TARGET" 2>&1 || true
     [ "$LOG_DIR" != "/tmp" ] && cp -f "$LOG_TARGET" "/tmp/live_container_${DIST_ID:-generic}.log" 2>/dev/null || true
 }
@@ -185,7 +202,7 @@ else
 fi
 
 # 4. Check Shell Profile Injections
-CURRENT_STAGE="4/5: Verifying shell profile hooks and aliases (Bash, Zsh, Fish)"
+CURRENT_STAGE="4/5: Verifying shell profile hooks and aliases (Bash, Zsh, Fish, PowerShell)"
 echo "[TEST 4/5] Verifying shell profile hooks and aliases..."
 if [ -f "$HOME/.bashrc" ]; then
     grep -q 'starship init bash' "$HOME/.bashrc" || (echo "[-] FAIL: starship hook missing from ~/.bashrc" && exit 1)
@@ -214,12 +231,28 @@ if [ -f "$HOME/.config/fish/config.fish" ]; then
     echo "  ✓ Fish profile verified."
 fi
 
+if command -v pwsh &>/dev/null || [ -f "$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1" ]; then
+    PWSH_PROFILE="$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1"
+    [ -f "$PWSH_PROFILE" ] || (echo "[-] FAIL: PowerShell profile missing at $PWSH_PROFILE" && exit 1)
+    grep -q 'starship init powershell' "$PWSH_PROFILE" || (echo "[-] FAIL: starship hook missing from $PWSH_PROFILE" && exit 1)
+    grep -q 'zoxide init powershell' "$PWSH_PROFILE" || (echo "[-] FAIL: zoxide hook missing from $PWSH_PROFILE" && exit 1)
+    grep -q 'function ls' "$PWSH_PROFILE" || (echo "[-] FAIL: eza functions missing from $PWSH_PROFILE" && exit 1)
+    grep -q 'function cat' "$PWSH_PROFILE" || (echo "[-] FAIL: bat functions missing from $PWSH_PROFILE" && exit 1)
+    echo "  ✓ PowerShell (pwsh) profile verified."
+
+    if command -v pwsh &>/dev/null; then
+        pwsh -NoProfile -Command ". \$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1; if (!(Get-Command prompt -ErrorAction SilentlyContinue)) { exit 1 }"
+        echo "  ✓ PowerShell prompt execution verified."
+    fi
+fi
+
 # 5. Test Idempotency
 CURRENT_STAGE="5/5: Testing idempotence across shell profiles (second execution)"
 echo "[TEST 5/5] Testing idempotence (second execution)..."
 BASHRC_SUM_1=$(sha256sum "$HOME/.bashrc" 2>/dev/null || true)
 ZSHRC_SUM_1=$(sha256sum "$HOME/.zshrc" 2>/dev/null || true)
 FISH_SUM_1=$(sha256sum "$HOME/.config/fish/config.fish" 2>/dev/null || true)
+PWSH_SUM_1=$(sha256sum "$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1" 2>/dev/null || true)
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." &>/dev/null && pwd)"
 bash "$REPO_DIR/dotfiles/setup_starship.sh" > /dev/null
@@ -227,10 +260,12 @@ bash "$REPO_DIR/dotfiles/setup_starship.sh" > /dev/null
 BASHRC_SUM_2=$(sha256sum "$HOME/.bashrc" 2>/dev/null || true)
 ZSHRC_SUM_2=$(sha256sum "$HOME/.zshrc" 2>/dev/null || true)
 FISH_SUM_2=$(sha256sum "$HOME/.config/fish/config.fish" 2>/dev/null || true)
+PWSH_SUM_2=$(sha256sum "$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1" 2>/dev/null || true)
 
 [ "$BASHRC_SUM_1" = "$BASHRC_SUM_2" ] || (echo "[-] FAIL: ~/.bashrc modified during 2nd execution (not idempotent)" && exit 1)
 [ "$ZSHRC_SUM_1" = "$ZSHRC_SUM_2" ] || (echo "[-] FAIL: ~/.zshrc modified during 2nd execution (not idempotent)" && exit 1)
 [ "$FISH_SUM_1" = "$FISH_SUM_2" ] || (echo "[-] FAIL: config.fish modified during 2nd execution (not idempotent)" && exit 1)
+[ "$PWSH_SUM_1" = "$PWSH_SUM_2" ] || (echo "[-] FAIL: Microsoft.PowerShell_profile.ps1 modified during 2nd execution (not idempotent)" && exit 1)
 echo "  ✓ Idempotency confirmed: all profiles unchanged on second run."
 
 echo "========================================="
