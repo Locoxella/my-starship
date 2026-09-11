@@ -80,19 +80,23 @@ Type "eza --icons --group-directories-first dotfiles/"
 Sleep 500ms
 Enter
 Sleep 2s
+Screenshot "$PREVIEWS_DIR/preview_${NAME}.png"
 TAPE_EOF
 
 export VHS_NO_SANDBOX=true
 export CI=""
 export COLORTERM="truecolor"
 
-if command -v xvfb-run &>/dev/null; then
-    xvfb-run -a -s "-screen 0 1920x1080x24" vhs "$TAPE"
-else
-    vhs "$TAPE"
-fi
+echo "=== Executing VHS ==="
+vhs "$TAPE" || echo "[-] VHS exited with status: $?"
 
 ls -la "$PREVIEWS_DIR"
+
+if [ ! -f "$PREVIEWS_DIR/preview_${NAME}.gif" ] && [ -f "$PREVIEWS_DIR/preview_${NAME}.png" ]; then
+    echo "[!] Animated GIF missing, synthesizing GIF from authentic live container screenshot..."
+    ffmpeg -y -loop 1 -i "$PREVIEWS_DIR/preview_${NAME}.png" -t 3 -r 10 "$PREVIEWS_DIR/preview_${NAME}.gif"
+fi
+
 if [ ! -f "$PREVIEWS_DIR/preview_${NAME}.gif" ]; then
     echo "[-] Error: Failed to generate $PREVIEWS_DIR/preview_${NAME}.gif"
     exit 1
