@@ -141,8 +141,8 @@ if [ -f "$HOME/.bashrc" ] || command -v bash &> /dev/null; then
     if ! grep -q 'starship init bash' "$HOME/.bashrc"; then
         echo "[+] Injecting Starship hook into ~/.bashrc"
         echo '' >> "$HOME/.bashrc"
-        echo '# Starship prompt initialization' >> "$HOME/.bashrc"
-        echo 'eval "$(starship init bash)"' >> "$HOME/.bashrc"
+        echo '# Starship prompt initialization (interactive shells only)' >> "$HOME/.bashrc"
+        echo 'if [[ $- == *i* ]]; then eval "$(starship init bash)"; fi' >> "$HOME/.bashrc"
     else
         echo "[✓] Bash: Starship already configured."
     fi
@@ -214,8 +214,8 @@ if [ -f "$HOME/.zshrc" ] || command -v zsh &> /dev/null; then
     if ! grep -q 'starship init zsh' "$ZSH_RC"; then
         echo "[+] Injecting Starship hook into ~/.zshrc"
         echo '' >> "$ZSH_RC"
-        echo '# Starship prompt initialization' >> "$ZSH_RC"
-        echo 'eval "$(starship init zsh)"' >> "$ZSH_RC"
+        echo '# Starship prompt initialization (interactive shells only)' >> "$ZSH_RC"
+        echo 'if [[ $- == *i* ]]; then eval "$(starship init zsh)"; fi' >> "$ZSH_RC"
     else
         echo "[✓] Zsh: Starship already configured."
     fi
@@ -364,8 +364,8 @@ if command -v pwsh &> /dev/null; then
     if ! grep -q 'starship init powershell' "$PWSH_PROFILE"; then
         echo "[+] Injecting Starship hook into $PWSH_PROFILE"
         echo '' >> "$PWSH_PROFILE"
-        echo '# Starship prompt initialization' >> "$PWSH_PROFILE"
-        echo 'Invoke-Expression (&starship init powershell)' >> "$PWSH_PROFILE"
+        echo '# Starship prompt initialization (interactive console only)' >> "$PWSH_PROFILE"
+        echo 'if ($Host.UI.RawUI.KeyAvailable) { Invoke-Expression (&starship init powershell) }' >> "$PWSH_PROFILE"
     else
         echo "[✓] PowerShell: Starship already configured."
     fi

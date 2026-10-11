@@ -90,7 +90,7 @@ foreach ($prof in $profilesToUpdate) {
         # Starship
         if ($content -notlike "*starship init powershell*") {
             Write-Host "[+] Injecting Starship hook into: $prof" -ForegroundColor Yellow
-            Add-Content -Path $prof -Value "`n# Starship prompt initialization`nInvoke-Expression (&starship init powershell)"
+            Add-Content -Path $prof -Value "`n# Starship prompt initialization`nif (`$Host.UI.RawUI.KeyAvailable) { Invoke-Expression (&starship init powershell) }"
         } else {
             Write-Host "[✓] Profile already has Starship: $prof" -ForegroundColor Green
         }

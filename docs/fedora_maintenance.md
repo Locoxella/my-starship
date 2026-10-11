@@ -42,3 +42,16 @@ This computer (`Scar`) is the **single source of truth** for the Starship config
 3. **Clear Protocol Mapping:** Explicitly defined Express Mode (1-liners) and Step-by-Step Mode for restricted terminals.
 4. **Nerd Font Detection & Helper:** Added automated font detection in setup scripts and created `dotfiles/install_nerd_font.sh`.
 5. **Visual Previews:** Created SVG vector preview and VHS `.tape` demo script.
+
+---
+
+### [2026-10-11] Multi-Shell Harmonization & Starship Shell Indicators
+
+1. **Starship Configuration:** Added `powershell_indicator`, `cmd_indicator`, `nu_indicator`, and `unknown_indicator` to `dotfiles/starship.toml` and synchronized with `~/.config/starship.toml`.
+2. **Setup Scripts:** Added interactive guards (`[[ $- == *i* ]]` and `$Host.UI.RawUI.KeyAvailable`) to prevent Starship execution during non-interactive automated subshells in Bash, Zsh, and PowerShell.
+3. **Local Shells Harmonization:**
+   - **Bash:** Moved user PATHs and `EDITOR`/`VISUAL=vim` before the AI Agent guard so agent subshells have full access to `~/.local/bin`, Homebrew, Go, Bun, and CUDA.
+   - **Fish:** Switched Bun to `fish_add_path` to prevent path duplication across subshells; cleaned up purged Snap path; aligned AI agent guard to check both `ANTIGRAVITY_AGENT` and `AI_AGENT`.
+   - **Zsh:** Removed purged Snap path; integrated CUDA and Bun into PATH; updated AI agent guard to support both `ANTIGRAVITY_AGENT` and `AI_AGENT`; set `VISUAL=vim`.
+   - **PowerShell:** Integrated AI agent guard, `~/.local/bin` PATH check, CUDA paths, and `eza`/`bat` aliases functions.
+   - **CUDA:** Configured shells to reference `/usr/local/cuda` (active symlink for CUDA 13.1) with fallback.
