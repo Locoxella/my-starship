@@ -106,12 +106,19 @@ $RECYCLE.BIN/
 # Custom Project Rules
 # ==============================================================================
 # Add project-specific files below that are not covered by gitignore.io.
-.env
-*.env
+
+# --- Custom Project Rules ---
+
+# Local maintainer scripts and internal tools
+scripts/
+
+# CI/CD test artifacts & live logs
+ci-artifacts/
+
+# Secrets, databases, and local configurations
+.env*
 *.local
 *.db
 *.sqlite3
 scratch/
-scripts/
-ci-artifacts/
 *.bak-starship*

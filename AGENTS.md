@@ -32,6 +32,7 @@ my-starship/
 │   └── fedora_maintenance.md  # Fedora (Scar laptop) hardware/OS maintenance logs
 ├── scripts/                   # Local maintainer scripts (ignored / internal)
 │   ├── maintenance/           # Host-specific maintenance scripts (e.g. remove_snap.sh)
+│   ├── switch_theme.sh        # Switches Catppuccin flavor (mocha, latte, frappe, macchiato)
 │   └── sync_starship_local.sh # Synchronizes ~/.config/starship.toml -> dotfiles/
 ├── tests/                     # CI test suite & container bootstrap
 │   ├── bootstrap_distro.sh    # Prepares container environments (Fedora, Ubuntu, etc.)
@@ -56,7 +57,16 @@ The host computer (`Scar`) serves as the master environment:
 
 2. This script validates syntax via `starship print-config` and copies the file to `dotfiles/starship.toml`.
 
-### 2. Generating Animated Demo GIFs (VHS)
+### 2. Switching Catppuccin Theme Flavor
+
+To quickly toggle between dark (Mocha, Frappe, Macchiato) and light (Latte) themes:
+
+```bash
+./scripts/switch_theme.sh latte   # Switch to light theme
+./scripts/switch_theme.sh mocha   # Switch back to default dark theme
+```
+
+### 3. Generating Animated Demo GIFs (VHS)
 
 To update the animated demo GIF using [VHS](https://github.com/charmbracelet/vhs):
 
@@ -66,8 +76,7 @@ vhs assets/demo.tape
 
 *Note: The generated GIF can be placed in `assets/demo.gif` if needed.*
 
-### 3. Pre-Commit Validation Checks
-
+### 4. Pre-Commit Validation Checks
 Always ensure all scripts pass syntax checks and the TOML config is valid before pushing:
 
 ```bash
@@ -78,6 +87,7 @@ STARSHIP_CONFIG=dotfiles/starship.toml starship print-config > /dev/null
 bash -n dotfiles/setup_starship.sh
 bash -n dotfiles/install_nerd_font.sh
 bash -n scripts/sync_starship_local.sh
+bash -n scripts/switch_theme.sh
 bash -n scripts/maintenance/remove_snap.sh
 bash -n tests/verify_installation.sh
 bash -n tests/bootstrap_distro.sh

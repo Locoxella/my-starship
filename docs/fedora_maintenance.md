@@ -62,3 +62,35 @@ This computer (`Scar`) is the **single source of truth** for the Starship config
    * **Zsh:** Removed purged Snap path; integrated CUDA and Bun into PATH; updated AI agent guard to support both `ANTIGRAVITY_AGENT` and `AI_AGENT`; set `VISUAL=vim`.
    * **PowerShell:** Integrated AI agent guard, `~/.local/bin` PATH check, CUDA paths, and `eza`/`bat` aliases functions.
    * **CUDA:** Configured shells to reference `/usr/local/cuda` (active symlink for CUDA 13.1) with fallback.
+
+---
+
+### [2026-10-13] Optional CLI Tools (Glow) & KDE Plasma Fixed Font Integration
+
+1. **Optional Tool Integration (`glow`):**
+   - Configured cross-shell handling for markdown files (`glow -p`) across Bash (`command_not_found_handle`), Zsh (`alias -s md/markdown`), Fish (`auto_glow.fish` with enter hook), and PowerShell (`CommandNotFoundAction` / PSReadLine enter key handler).
+   - Injected conditional setup in `dotfiles/setup_starship.sh` and `dotfiles/setup_starship.ps1`.
+2. **KDE Plasma System-Wide Font Configuration:**
+   - Added KDE Plasma tip in `dotfiles/install_nerd_font.sh` and `README.md` to configure `Hack Nerd Font Mono` as the system-wide fixed-width font (`kwriteconfig6` / `kwriteconfig5` on `kdeglobals`), ensuring terminals without explicit font pickers correctly display Nerd Font symbols.
+3. **Documentation:**
+   - Updated `README.md` with optional CLI enhancements section and KDE configuration tip.
+
+---
+
+### [2026-10-31] PowerShell Guard Fix, Multi-Architecture Support, Nushell & Gitignore Standardization
+
+1. **PowerShell Interactivity Guard Fix:**
+   - Replaced `$Host.UI.RawUI.KeyAvailable` with `-not [Console]::IsInputRedirected` across `dotfiles/setup_starship.sh`, `dotfiles/setup_starship.ps1`, and local `~/.config/powershell/Microsoft.PowerShell_profile.ps1`.
+   - Prevented Starship initialization failure in interactive PowerShell consoles caused by checking the keyboard buffer.
+2. **Automated Verification Test Suite:**
+   - Enhanced `tests/verify_installation.sh` to assert that the PowerShell prompt is actually configured by Starship (`STARSHIP_SHELL` / prompt definition match) rather than testing the built-in default PowerShell `prompt`.
+3. **Multi-Architecture & macOS Support:**
+   - Added Linux `aarch64` (ARM64) support for `bat` binary downloads in `dotfiles/setup_starship.sh`.
+   - Added Darwin (macOS) fallback for `bat` and `eza` via Homebrew (`brew install`).
+4. **Nushell Integration:**
+   - Added automatic Starship configuration for Nushell (`nu`) in `dotfiles/setup_starship.sh`.
+5. **Catppuccin Theme Switcher:**
+   - Added `scripts/switch_theme.sh` allowing instant switching between Catppuccin flavors (`mocha`, `latte`, `frappe`, `macchiato`).
+6. **Gitignore Standardization:**
+   - Replaced minimal ad-hoc `.gitignore` with standard Toptal gitignore.io baseline (Linux, macOS, Windows, VS Code, JetBrains, PowerShell) and preserved custom rules.
+>>>>>>> 5fc96d1 (feat: fix PowerShell guard, add ARM64/Nushell support, update fonts, and add ShellCheck CI)

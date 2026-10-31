@@ -97,11 +97,16 @@ if ! command -v eza &> /dev/null; then
     echo "[+] Installing eza..."
     TEMP_EZA="$(mktemp -d)"
     ARCH="$(uname -m)"
-    if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "aarch64" ]; then
-        if [ "$(uname)" = "Linux" ]; then
+    OS="$(uname)"
+    if [ "$OS" = "Linux" ]; then
+        if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "aarch64" ]; then
             curl -fsSL "https://github.com/eza-community/eza/releases/latest/download/eza_${ARCH}-unknown-linux-gnu.tar.gz" -o "$TEMP_EZA/eza.tar.gz" 2>/dev/null && \
             tar -xzf "$TEMP_EZA/eza.tar.gz" -C "$LOCAL_BIN" 2>/dev/null && \
             chmod +x "$LOCAL_BIN/eza" 2>/dev/null || true
+        fi
+    elif [ "$OS" = "Darwin" ]; then
+        if command -v brew &> /dev/null; then
+            brew install eza 2>/dev/null || true
         fi
     fi
     rm -rf "$TEMP_EZA"
@@ -114,11 +119,26 @@ if ! command -v bat &> /dev/null && ! command -v batcat &> /dev/null; then
     echo "[+] Installing bat..."
     TEMP_BAT="$(mktemp -d)"
     ARCH="$(uname -m)"
-    if [ "$ARCH" = "x86_64" ] && [ "$(uname)" = "Linux" ]; then
-        curl -fsSL "https://github.com/sharkdp/bat/releases/download/v0.25.0/bat-v0.25.0-x86_64-unknown-linux-gnu.tar.gz" -o "$TEMP_BAT/bat.tar.gz" 2>/dev/null && \
-        tar -xzf "$TEMP_BAT/bat.tar.gz" -C "$TEMP_BAT" 2>/dev/null && \
-        cp "$TEMP_BAT"/bat-*/bat "$LOCAL_BIN/bat" 2>/dev/null && \
-        chmod +x "$LOCAL_BIN/bat" 2>/dev/null || true
+    OS="$(uname)"
+    BAT_VER=$(curl -sI https://github.com/sharkdp/bat/releases/latest 2>/dev/null | grep -i '^location:' | sed 's/.*tag\/v*//' | tr -d '\r\n')
+    BAT_VER="${BAT_VER:-0.25.0}"
+    if [ "$OS" = "Linux" ]; then
+        BAT_PKG=""
+        if [ "$ARCH" = "x86_64" ]; then
+            BAT_PKG="bat-v${BAT_VER}-x86_64-unknown-linux-gnu.tar.gz"
+        elif [ "$ARCH" = "aarch64" ]; then
+            BAT_PKG="bat-v${BAT_VER}-aarch64-unknown-linux-gnu.tar.gz"
+        fi
+        if [ -n "$BAT_PKG" ]; then
+            curl -fsSL "https://github.com/sharkdp/bat/releases/download/v${BAT_VER}/${BAT_PKG}" -o "$TEMP_BAT/bat.tar.gz" 2>/dev/null && \
+            tar -xzf "$TEMP_BAT/bat.tar.gz" -C "$TEMP_BAT" 2>/dev/null && \
+            cp "$TEMP_BAT"/bat-*/bat "$LOCAL_BIN/bat" 2>/dev/null && \
+            chmod +x "$LOCAL_BIN/bat" 2>/dev/null || true
+        fi
+    elif [ "$OS" = "Darwin" ]; then
+        if command -v brew &> /dev/null; then
+            brew install bat 2>/dev/null || true
+        fi
     fi
     rm -rf "$TEMP_BAT"
 else
@@ -198,6 +218,30 @@ if [ -f "$HOME/.bashrc" ] || command -v bash &> /dev/null; then
             echo "[✓] Bash: bat aliases already configured."
         fi
     fi
+
+    # glow (optional markdown preview & auto-open)
+    if command -v glow &> /dev/null; then
+        if ! grep -q 'glow -p' "$HOME/.bashrc"; then
+            echo "[+] Injecting glow markdown handler into ~/.bashrc"
+            echo '' >> "$HOME/.bashrc"
+            echo '# Auto-open .md files with glow' >> "$HOME/.bashrc"
+            echo 'command_not_found_handle() {' >> "$HOME/.bashrc"
+            echo '    local cmd="$1"' >> "$HOME/.bashrc"
+            echo '    if [[ -f "$cmd" && ( "$cmd" == *.md || "$cmd" == *.markdown ) ]]; then' >> "$HOME/.bashrc"
+            echo '        glow -p "$cmd"' >> "$HOME/.bashrc"
+            echo '        return 0' >> "$HOME/.bashrc"
+            echo '    fi' >> "$HOME/.bashrc"
+            echo '    if [[ -x /usr/libexec/pk-command-not-found ]]; then' >> "$HOME/.bashrc"
+            echo '        /usr/libexec/pk-command-not-found "$@"' >> "$HOME/.bashrc"
+            echo '        return $?' >> "$HOME/.bashrc"
+            echo '    fi' >> "$HOME/.bashrc"
+            echo '    printf "bash: %s: command not found\n" "$cmd" >&2' >> "$HOME/.bashrc"
+            echo '    return 127' >> "$HOME/.bashrc"
+            echo '}' >> "$HOME/.bashrc"
+        else
+            echo "[✓] Bash: glow markdown handler already configured."
+        fi
+    fi
 fi
 
 # --- Zsh ---
@@ -269,6 +313,20 @@ if [ -f "$HOME/.zshrc" ] || command -v zsh &> /dev/null; then
             fi
         else
             echo "[✓] Zsh: bat aliases already configured."
+        fi
+    fi
+
+    # glow (optional markdown preview & auto-open)
+    if command -v glow &> /dev/null; then
+        if ! grep -q 'glow completion zsh' "$ZSH_RC"; then
+            echo "[+] Injecting glow completion and suffix aliases into ~/.zshrc"
+            echo '' >> "$ZSH_RC"
+            echo '# Enable glow completion and markdown suffix aliases' >> "$ZSH_RC"
+            echo 'eval "$(glow completion zsh 2>/dev/null || true)"' >> "$ZSH_RC"
+            echo 'alias -s md="glow -p"' >> "$ZSH_RC"
+            echo 'alias -s markdown="glow -p"' >> "$ZSH_RC"
+        else
+            echo "[✓] Zsh: glow already configured."
         fi
     fi
 fi
@@ -346,6 +404,40 @@ if command -v fish &> /dev/null || [ -d "$FISH_CONFIG_DIR" ]; then
             echo "[✓] Fish: bat aliases already configured."
         fi
     fi
+
+    # glow (optional auto-open for fish)
+    if command -v glow &> /dev/null; then
+        mkdir -p "$FISH_CONFIG_DIR/conf.d"
+        AUTO_GLOW_FILE="$FISH_CONFIG_DIR/conf.d/auto_glow.fish"
+        if [ ! -f "$AUTO_GLOW_FILE" ]; then
+            echo "[+] Creating auto_glow.fish handler for Fish"
+            cat << 'EOF' > "$AUTO_GLOW_FILE"
+status is-interactive || exit
+
+function __auto_glow_execute
+    set -l line (string trim -- (commandline))
+    set -l file (string replace -r '^["\'](.*)["\']$' '$1' -- $line)
+
+    if test -n "$file" -a -f "$file"
+        set -l ext (path extension -- "$file")
+        if test "$ext" = ".md" -o "$ext" = ".markdown"
+            commandline -r "glow -p "(string escape -- $file)
+        end
+    end
+    commandline -f execute
+end
+
+function _setup_auto_glow_bindings --on-variable fish_key_bindings
+    bind enter __auto_glow_execute
+    bind --mode insert enter __auto_glow_execute 2>/dev/null
+end
+
+_setup_auto_glow_bindings
+EOF
+        else
+            echo "[✓] Fish: auto_glow.fish already present."
+        fi
+    fi
 fi
 
 # --- PowerShell (pwsh on Linux/macOS) ---
@@ -360,12 +452,18 @@ if command -v pwsh &> /dev/null; then
         echo 'if ($env:PATH -notlike "*$HOME/.local/bin*") { $env:PATH = "$HOME/.local/bin:$env:PATH" }' >> "$PWSH_PROFILE"
     fi
 
+    # Fix legacy KeyAvailable guard in PowerShell profile if present
+    if grep -q '\$Host\.UI\.RawUI\.KeyAvailable' "$PWSH_PROFILE"; then
+        echo "[+] Updating PowerShell Starship guard from KeyAvailable to IsInputRedirected..."
+        sed -i 's/\$Host\.UI\.RawUI\.KeyAvailable/-not [Console]::IsInputRedirected/g' "$PWSH_PROFILE"
+    fi
+
     # Starship
     if ! grep -q 'starship init powershell' "$PWSH_PROFILE"; then
         echo "[+] Injecting Starship hook into $PWSH_PROFILE"
         echo '' >> "$PWSH_PROFILE"
         echo '# Starship prompt initialization (interactive console only)' >> "$PWSH_PROFILE"
-        echo 'if ($Host.UI.RawUI.KeyAvailable) { Invoke-Expression (&starship init powershell) }' >> "$PWSH_PROFILE"
+        echo 'if (-not [Console]::IsInputRedirected) { Invoke-Expression (&starship init powershell) }' >> "$PWSH_PROFILE"
     else
         echo "[✓] PowerShell: Starship already configured."
     fi
@@ -409,6 +507,60 @@ if command -v pwsh &> /dev/null; then
         else
             echo "[✓] PowerShell: bat functions already configured."
         fi
+    fi
+
+    # glow (optional auto-open for pwsh)
+    if command -v glow &> /dev/null; then
+        if ! grep -q 'glow -p' "$PWSH_PROFILE"; then
+            echo "[+] Injecting glow markdown handler into $PWSH_PROFILE"
+            echo '' >> "$PWSH_PROFILE"
+            echo '# Auto-open .md files with glow' >> "$PWSH_PROFILE"
+            echo 'if ($ExecutionContext.InvokeCommand) {' >> "$PWSH_PROFILE"
+            echo '    $ExecutionContext.InvokeCommand.CommandNotFoundAction = {' >> "$PWSH_PROFILE"
+            echo '        param($commandName, $commandLookupEventArgs)' >> "$PWSH_PROFILE"
+            echo '        $cleanName = $commandName -replace ''^get-'', ''''' >> "$PWSH_PROFILE"
+            echo '        if ((Test-Path -Path $cleanName -PathType Leaf) -and ($cleanName -match ''\.(md|markdown)$'')) {' >> "$PWSH_PROFILE"
+            echo '            $commandLookupEventArgs.CommandScriptBlock = [scriptblock]::Create("glow -p `"$cleanName`"")' >> "$PWSH_PROFILE"
+            echo '            $commandLookupEventArgs.StopSearch = $true' >> "$PWSH_PROFILE"
+            echo '        }' >> "$PWSH_PROFILE"
+            echo '    }' >> "$PWSH_PROFILE"
+            echo '}' >> "$PWSH_PROFILE"
+            echo '' >> "$PWSH_PROFILE"
+            echo 'if (Get-Module -ListAvailable -Name PSReadLine) {' >> "$PWSH_PROFILE"
+            echo '    Import-Module PSReadLine -ErrorAction SilentlyContinue' >> "$PWSH_PROFILE"
+            echo '    Set-PSReadLineKeyHandler -Key Enter -ScriptBlock {' >> "$PWSH_PROFILE"
+            echo '        $line = ""' >> "$PWSH_PROFILE"
+            echo '        $cursor = 0' >> "$PWSH_PROFILE"
+            echo '        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)' >> "$PWSH_PROFILE"
+            echo '        $clean = $line.Trim().Trim(@(''"'', "''"))' >> "$PWSH_PROFILE"
+            echo '        if ($clean -and (Test-Path -Path $clean -PathType Leaf) -and ($clean -match ''\.(md|markdown)$'')) {' >> "$PWSH_PROFILE"
+            echo '            [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()' >> "$PWSH_PROFILE"
+            echo '            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("glow -p `"$clean`"")' >> "$PWSH_PROFILE"
+            echo '        }' >> "$PWSH_PROFILE"
+            echo '        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()' >> "$PWSH_PROFILE"
+            echo '    }' >> "$PWSH_PROFILE"
+            echo '}' >> "$PWSH_PROFILE"
+        else
+            echo "[✓] PowerShell: glow markdown handler already configured."
+        fi
+    fi
+fi
+
+# --- Nushell (nu) ---
+if command -v nu &> /dev/null || [ -d "$HOME/.config/nushell" ]; then
+    NU_CONFIG_DIR="$HOME/.config/nushell"
+    mkdir -p "$NU_CONFIG_DIR"
+    NU_CONFIG="$NU_CONFIG_DIR/config.nu"
+    touch "$NU_CONFIG"
+
+    if ! grep -q 'starship init nu' "$NU_CONFIG"; then
+        echo "[+] Injecting Starship hook into $NU_CONFIG"
+        echo '' >> "$NU_CONFIG"
+        echo '# Starship prompt initialization' >> "$NU_CONFIG"
+        echo 'mkdir ($nu.data-dir | path join "vendor/autoload")' >> "$NU_CONFIG"
+        echo 'starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")' >> "$NU_CONFIG"
+    else
+        echo "[✓] Nushell: Starship already configured."
     fi
 fi
 

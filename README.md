@@ -39,8 +39,12 @@ To deliver a powerful, consistent terminal experience out-of-the-box, the automa
 | **[`eza`](https://github.com/eza-community/eza)** | Modern `ls` | Drop-in replacement for `ls` with Nerd Font filetype icons, Git status indicators, and human-readable format. |
 | **[`bat`](https://github.com/sharkdp/bat)** | Modern `cat` | Syntax-highlighting file viewer with git modifications gutter integration. |
 
+### 🧩 Optional CLI Enhancements
+Visiting agents and users can also configure optional modern CLI tools:
+- **[`glow`](https://github.com/charmbracelet/glow)** — Terminal markdown reader. When installed (`glow`), the setup scripts configure auto-open markdown file handling across shells (`glow -p <file.md>` on direct invocation in Bash, Zsh suffix aliases, Fish enter binding, and PowerShell command-not-found / PSReadLine handlers).
+
 > [!NOTE]
-> **Strict Idempotency Guarantee:** We take the liberty of configuring these utilities across all detected shells (Bash, Zsh, Fish, PowerShell). The configurator **always inspects your shell files first** and skips any tool, plugin (e.g. `jethrokuan/z`, `fzf.fish`), or alias that is already present to prevent duplicate hooks or broken environments.
+> **Strict Idempotency Guarantee:** We take the liberty of configuring these utilities across all detected shells (Bash, Zsh, Fish, PowerShell, Nushell). The configurator **always inspects your shell files first** and skips any tool, plugin (e.g. `jethrokuan/z`, `fzf.fish`), or alias that is already present to prevent duplicate hooks or broken environments.
 
 ---
 
@@ -65,8 +69,7 @@ You are an AI Agent tasked with configuring the prompt on the client machine whe
 
 Execute the command matching the client platform:
 
-### 🐧 Linux / WSL / macOS (Bash, Zsh, Fish, Pwsh)
-
+### 🐧 Linux / WSL / macOS (Bash, Zsh, Fish, Pwsh, Nu)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles/setup_starship.sh | bash
 ```
@@ -90,9 +93,8 @@ curl -fsSL https://raw.githubusercontent.com/Locoxella/my-starship/main/dotfiles
 Use this mode when you need to inspect or execute each step individually.
 
 ### Step 1: Detect System & Shells
-
-- **Linux/WSL/macOS:** Run `which bash zsh fish pwsh 2>/dev/null`
-- **Windows:** Run `Get-Command bash, zsh, fish, pwsh, powershell, cmd, clink -ErrorAction SilentlyContinue`
+- **Linux/WSL/macOS:** Run `which bash zsh fish pwsh nu 2>/dev/null`
+- **Windows:** Run `Get-Command bash, zsh, fish, pwsh, powershell, nu, cmd, clink -ErrorAction SilentlyContinue`
 
 ### Step 2: Install Starship Binary
 
@@ -162,7 +164,8 @@ Verify each tool is not already configured in your target profile before appendi
 | **Bash** | Linux / WSL / macOS | `~/.bashrc` (or `~/.bash_profile` on macOS) | `if [[ $- == *i* ]]; then eval "$(starship init bash)"; fi`<br>`eval "$(zoxide init bash)"`<br>`eval "$(fzf --bash)"`<br>`alias ls='eza --icons'`<br>`alias cat='bat -P --style plain'` |
 | **Zsh** | Linux / WSL / macOS | `~/.zshrc` | `if [[ -o interactive ]]; then eval "$(starship init zsh)"; fi`<br>`eval "$(zoxide init zsh)"`<br>`eval "$(fzf --zsh)"`<br>`alias ls='eza --icons'`<br>`alias cat='bat -P --style plain'` |
 | **Fish** | Linux / WSL / macOS | `~/.config/fish/config.fish` | `starship init fish \| source`<br>`zoxide init fish \| source` (skip if `z` exists)<br>`fzf --fish \| source` (skip if `fzf.fish` exists)<br>`alias ls="eza --icons"`<br>`alias cat="bat -P --style plain"` |
-| **PowerShell** | Windows / Linux / macOS | `$PROFILE` (or `MyDocuments\WindowsPowerShell` in PS 5.1) | `Invoke-Expression (&starship init powershell)`<br>`Invoke-Expression (& { (zoxide init powershell \| Out-String) })` |
+| **PowerShell** | Windows / Linux / macOS | `$PROFILE` (or `MyDocuments\WindowsPowerShell` in PS 5.1) | `if (-not [Console]::IsInputRedirected) { Invoke-Expression (&starship init powershell) }`<br>`Invoke-Expression (& { (zoxide init powershell \| Out-String) })`<br>`function ls { eza --icons $args }`<br>`function cat { bat -P --style plain $args }` |
+| **Nushell** | Linux / WSL / macOS / Windows | `~/.config/nushell/config.nu` | `mkdir ($nu.data-dir \| path join "vendor/autoload")`<br>`starship init nu \| save -f ($nu.data-dir \| path join "vendor/autoload/starship.nu")` |
 | **CMD (Clink)** | Windows | `%LOCALAPPDATA%\clink\starship.lua` | `load(io.popen('starship init cmd'):read("*a"))()` |
 
 ### Step 6: Install Mandatory Fonts (Hack & FiraCode Nerd Fonts)
@@ -190,6 +193,12 @@ Execute the font installer for the target OS:
 
 1. **Reload Shell:** Run `source ~/.bashrc` (or restart PowerShell / CMD).
 2. **Set Terminal Font:** Open terminal preferences (Windows Terminal, VS Code, Kitty, Alacritty, iTerm2, WezTerm) and select **Hack Nerd Font** as the font family.
+3. **KDE Plasma System-Wide Fixed Font (Optional):** Some terminal emulators or embedded consoles in KDE do not have a font selector and instead inherit the system-wide fixed-width font. Set Hack Nerd Font Mono as the default fixed font:
+   ```bash
+   kwriteconfig6 --file kdeglobals --group General --key fixed "Hack Nerd Font Mono,10,-1,5,50,0,0,0,0,0"
+   # or on KDE 5:
+   # kwriteconfig5 --file kdeglobals --group General --key fixed "Hack Nerd Font Mono,10,-1,5,50,0,0,0,0,0"
+   ```
 
 ---
 

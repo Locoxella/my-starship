@@ -4,7 +4,7 @@
 
 set -e
 
-FONT_VERSION="v3.3.0"
+FONT_VERSION="v3.5.1"
 FONTS=("Hack" "FiraCode")
 
 echo "================================================="
@@ -44,4 +44,13 @@ echo "================================================="
 echo " [✓] Hack & FiraCode Nerd Fonts successfully installed!"
 echo " 👉 Recommended terminal font: 'Hack Nerd Font'"
 echo " 👉 Recommended VS Code/editor font: 'FiraCode Nerd Font'"
+
+# KDE Plasma Tip
+if command -v kwriteconfig6 &> /dev/null || command -v kwriteconfig5 &> /dev/null; then
+    KWRITE_BIN="$(command -v kwriteconfig6 || command -v kwriteconfig5)"
+    echo ""
+    echo " 💡 KDE Plasma detected!"
+    echo " To set Hack Nerd Font Mono as your default system-wide fixed-width font:"
+    echo "   $KWRITE_BIN --file kdeglobals --group General --key fixed \"Hack Nerd Font Mono,10,-1,5,50,0,0,0,0,0\""
+fi
 echo "================================================="

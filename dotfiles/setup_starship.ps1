@@ -92,10 +92,17 @@ foreach ($prof in $profilesToUpdate) {
         
         $content = Get-Content $prof -Raw -ErrorAction SilentlyContinue
         
+        # Fix legacy KeyAvailable guard in PowerShell profile if present
+        if ($content -like "*Host.UI.RawUI.KeyAvailable*") {
+            Write-Host "[+] Updating Starship guard from KeyAvailable to IsInputRedirected in: $prof" -ForegroundColor Yellow
+            $content = $content -replace '\$Host\.UI\.RawUI\.KeyAvailable', '-not [Console]::IsInputRedirected'
+            Set-Content -Path $prof -Value $content -Force
+        }
+
         # Starship
         if ($content -notlike "*starship init powershell*") {
             Write-Host "[+] Injecting Starship hook into: $prof" -ForegroundColor Yellow
-            Add-Content -Path $prof -Value "`n# Starship prompt initialization`nif (`$Host.UI.RawUI.KeyAvailable) { Invoke-Expression (&starship init powershell) }"
+            Add-Content -Path $prof -Value "`n# Starship prompt initialization`nif (-not [Console]::IsInputRedirected) { Invoke-Expression (&starship init powershell) }"
         } else {
             Write-Host "[✓] Profile already has Starship: $prof" -ForegroundColor Green
         }
@@ -116,6 +123,41 @@ foreach ($prof in $profilesToUpdate) {
         if ($content -notlike "*function cat*bat*" -and (Get-Command bat -ErrorAction SilentlyContinue)) {
             Write-Host "[+] Injecting bat aliases into: $prof" -ForegroundColor Yellow
             Add-Content -Path $prof -Value "`n# bat aliases`nfunction cat { bat -P --style plain `$args }`nfunction less { bat `$args }"
+        }
+
+        # glow (optional markdown preview & auto-open)
+        if ($content -notlike "*glow -p*" -and (Get-Command glow -ErrorAction SilentlyContinue)) {
+            Write-Host "[+] Injecting glow markdown handler into: $prof" -ForegroundColor Yellow
+            $glowHook = @'
+
+# Auto-open .md files with glow
+if ($ExecutionContext.InvokeCommand) {
+    $ExecutionContext.InvokeCommand.CommandNotFoundAction = {
+        param($commandName, $commandLookupEventArgs)
+        $cleanName = $commandName -replace '^get-', ''
+        if ((Test-Path -Path $cleanName -PathType Leaf) -and ($cleanName -match '\.(md|markdown)$')) {
+            $commandLookupEventArgs.CommandScriptBlock = [scriptblock]::Create("glow -p `"$cleanName`"")
+            $commandLookupEventArgs.StopSearch = $true
+        }
+    }
+}
+
+if (Get-Module -ListAvailable -Name PSReadLine) {
+    Import-Module PSReadLine -ErrorAction SilentlyContinue
+    Set-PSReadLineKeyHandler -Key Enter -ScriptBlock {
+        $line = ""
+        $cursor = 0
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+        $clean = $line.Trim().Trim(@('"', "'"))
+        if ($clean -and (Test-Path -Path $clean -PathType Leaf) -and ($clean -match '\.(md|markdown)$')) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("glow -p `"$clean`"")
+        }
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+    }
+}
+'@
+            Add-Content -Path $prof -Value $glowHook
         }
     }
 }

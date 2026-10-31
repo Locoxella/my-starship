@@ -31,6 +31,16 @@ jobs:
           bash -n tests/run_container_test.sh
           echo "✓ Shell scripts syntax check passed."
 
+      - name: Lint Shell Scripts (ShellCheck)
+        run: |
+          shellcheck -e SC1090,SC1091,SC2016,SC2129,SC2155,SC2010,SC2028 \
+            dotfiles/setup_starship.sh \
+            dotfiles/install_nerd_font.sh \
+            tests/verify_installation.sh \
+            tests/bootstrap_distro.sh \
+            tests/run_container_test.sh
+          echo "✓ ShellCheck lint passed."
+
       - name: Generate Validation Summary
         if: always()
         run: |
@@ -43,11 +53,11 @@ jobs:
           | Target Asset | Component Type | Validator | Result |
           | :--- | :--- | :--- | :--- |
           | `dotfiles/starship.toml` | Master Starship Prompt Config | `starship print-config` | ✅ Syntax Valid |
-          | `dotfiles/setup_starship.sh` | Shell & CLI Auto-Configurator | `bash -n` parser | ✅ Syntax OK |
-          | `dotfiles/install_nerd_font.sh` | Hack & FiraCode Font Installer | `bash -n` parser | ✅ Syntax OK |
-          | `tests/verify_installation.sh` | Automated Test Suite | `bash -n` parser | ✅ Syntax OK |
-          | `tests/bootstrap_distro.sh` | Container Environment Bootstrapper | `bash -n` parser | ✅ Syntax OK |
-          | `tests/run_container_test.sh` | Multi-Distro Container & VHS Runner | `bash -n` parser | ✅ Syntax OK |
+          | `dotfiles/setup_starship.sh` | Shell & CLI Auto-Configurator | `bash -n` & `shellcheck` | ✅ Syntax & Lint OK |
+          | `dotfiles/install_nerd_font.sh` | Hack & FiraCode Font Installer | `bash -n` & `shellcheck` | ✅ Syntax & Lint OK |
+          | `tests/verify_installation.sh` | Automated Test Suite | `bash -n` & `shellcheck` | ✅ Syntax & Lint OK |
+          | `tests/bootstrap_distro.sh` | Container Environment Bootstrapper | `bash -n` & `shellcheck` | ✅ Syntax & Lint OK |
+          | `tests/run_container_test.sh` | Multi-Distro Container & VHS Runner | `bash -n` & `shellcheck` | ✅ Syntax & Lint OK |
 
           ---
           EOF

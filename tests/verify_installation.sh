@@ -28,7 +28,7 @@ write_github_summary() {
     local FONT_STATUS="❌ Missing"
     local FONT_DETAILS="No Nerd Fonts detected"
     if [ -d "$HOME/.local/share/fonts/NerdFonts" ]; then
-        local FONT_COUNT=$(ls -1 "$HOME/.local/share/fonts/NerdFonts" 2>/dev/null | wc -l || echo "0")
+        local FONT_COUNT=$(find "$HOME/.local/share/fonts/NerdFonts" -maxdepth 1 -type f 2>/dev/null | wc -l || echo "0")
         FONT_STATUS="✅ Verified (${FONT_COUNT} files)"
         FONT_DETAILS="Hack & FiraCode in \`~/.local/share/fonts/NerdFonts\`"
     elif command -v fc-list &>/dev/null && fc-list : family | grep -qiE "Hack.*Nerd|FiraCode.*Nerd"; then
@@ -98,7 +98,7 @@ write_github_summary() {
         echo "| ⚡ **zoxide** | \`zoxide\` | \`${ZOXIDE_VER}\` | $(command -v zoxide &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
         echo "| 🔍 **fzf** | \`fzf\` | \`${FZF_VER}\` | $(command -v fzf &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
         echo "| 🗂️ **eza** | \`eza\` | \`${EZA_VER}\` | $(command -v eza &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
-        echo "| 🦇 **bat** | \`bat\` | \`${BAT_VER}\` | $((command -v bat || command -v batcat) &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
+        echo "| 🦇 **bat** | \`bat\` | \`${BAT_VER}\` | $( (command -v bat || command -v batcat) &>/dev/null && echo "✅ PASS" || echo "❌ FAIL" ) |"
         echo "| 🐚 **PowerShell** | \`pwsh\` | \`${PWSH_VER}\` | $(command -v pwsh &>/dev/null && echo "✅ PASS" || echo "❌ FAIL") |"
         echo ""
         echo "### 🔤 Typography & Shell Configurations"
@@ -241,7 +241,7 @@ if command -v pwsh &>/dev/null || [ -f "$HOME/.config/powershell/Microsoft.Power
     echo "  ✓ PowerShell (pwsh) profile verified."
 
     if command -v pwsh &>/dev/null; then
-        pwsh -NoProfile -Command ". \$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1; if (!(Get-Command prompt -ErrorAction SilentlyContinue)) { exit 1 }"
+        env -u ANTIGRAVITY_AGENT -u AI_AGENT TERM=xterm-256color pwsh -NoProfile -Command ". \$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1; if ([string]::IsNullOrEmpty(\$env:STARSHIP_SHELL) -and -not ((Get-Command prompt).Definition -match 'starship' -or \$__zoxide_prompt_old -like '*starship*')) { exit 1 }"
         echo "  ✓ PowerShell prompt execution verified."
     fi
 fi
