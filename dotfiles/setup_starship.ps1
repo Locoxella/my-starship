@@ -74,10 +74,15 @@ foreach ($tool in $cliTools) {
 Write-Host ""
 Write-Host "[*] Configuring PowerShell profiles..." -ForegroundColor Cyan
 
+# Resolve documents folder dynamically (respects OneDrive redirection in Windows 10/11)
+$myDocs = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::MyDocuments)
+if (-not $myDocs) { $myDocs = Join-Path $HOME "Documents" }
+$ps5ProfilePath = if ($myDocs) { Join-Path $myDocs "WindowsPowerShell\Microsoft.PowerShell_profile.ps1" } else { $null }
+
 $profilesToUpdate = @(
     $PROFILE,
-    "$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
-) | Select-Object -Unique
+    $ps5ProfilePath
+) | Where-Object { [string]::IsNullOrWhiteSpace($_) -eq $false } | Select-Object -Unique
 
 foreach ($prof in $profilesToUpdate) {
     if ($prof) {

@@ -18,11 +18,15 @@ $c\
 $rust\
 $golang\
 $nodejs\
+$bun\
+$deno\
 $php\
 $java\
 $kotlin\
 $haskell\
 $python\
+$zig\
+$lua\
 [](fg:green bg:sapphire)\
 $conda\
 $package\
@@ -30,6 +34,7 @@ $terraform\
 $kubernetes\
 $docker_context\
 $sudo\
+$battery\
 [](fg:sapphire bg:lavender)\
 $shell\
 $time\
@@ -65,6 +70,13 @@ CentOS = ""
 Debian = "󰣚"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
+Pop = ""
+RockyLinux = "󰌽"
+AlmaLinux = "󰌽"
+NixOS = ""
+EndeavourOS = ""
+Kali = ""
+Void = ""
 
 [username]
 show_always = true
@@ -80,10 +92,16 @@ truncation_symbol = "…/"
 
 [directory.substitutions]
 "Documents" = "󰈙 "
+"Documentos" = "󰈙 "
 "Downloads" = " "
+"Descargas" = " "
 "Music" = "󰝚 "
+"Música" = "󰝚 "
 "Pictures" = " "
+"Imágenes" = " "
 "Developer" = "󰲋 "
+"Proyectos" = "󰲋 "
+"repos" = " "
 
 [git_branch]
 symbol = ""
@@ -139,6 +157,26 @@ symbol = ""
 style = "bg:green"
 format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:crust bg:green)]($style)'
 
+[bun]
+symbol = "󰞌 "
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[deno]
+symbol = "🦕 "
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[zig]
+symbol = " "
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[lua]
+symbol = " "
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
 [terraform]
 symbol = "󱁢"
 style = "bg:sapphire"
@@ -161,6 +199,17 @@ format = '[[ $symbol( $version) ](fg:crust bg:sapphire)]($style)'
 [sudo]
 style = "bg:sapphire"
 disabled = false
+
+[battery]
+full_symbol = "󰁹 "
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂃 "
+format = '[[ $symbol$percentage ](bg:sapphire fg:crust)]()'
+disabled = false
+
+[[battery.display]]
+threshold = 30
+style = "bg:sapphire fg:crust"
 
 [conda]
 symbol = "  "
