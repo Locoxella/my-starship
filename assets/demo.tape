@@ -19,7 +19,7 @@ Type 'eval "$(starship init bash)"' Enter
 Type 'eval "$(zoxide init bash)"' Enter
 Type "alias ll='eza -l -g --icons=auto'" Enter
 Type "alias cat='bat -P --style plain'" Enter
-Type "mkdir -p /tmp/cloud-native-microservice && zoxide add /tmp/cloud-native-microservice && cd $PWD" Enter
+Type "rm -rf /tmp/cloud-native-microservice && mkdir -p /tmp/cloud-native-microservice && zoxide add /tmp/cloud-native-microservice && cd $PWD" Enter
 Type "printf '\033[2J\033[H'" Enter
 Show
 
@@ -44,12 +44,12 @@ Sleep 400ms
 Enter
 Sleep 1.5s
 
-Type "touch deploy.yaml"
+Type "echo -e 'name: rocket-service\nenv: production\nreplicas: 3' > deploy.yaml"
 Sleep 400ms
 Enter
 Sleep 1.5s
 
-Type "cat /repo/README.md 2>/dev/null || cat README.md | head -n 12"
+Type "cat deploy.yaml"
 Sleep 400ms
 Enter
-Sleep 3s
+Sleep 3.5s

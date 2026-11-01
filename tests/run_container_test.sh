@@ -68,7 +68,7 @@ Sleep 1s
 Type "export STARSHIP_CONFIG=/repo/dotfiles/starship.toml" Enter
 Type "source ~/.bashrc" Enter
 Type "alias ll='eza -l -g --icons=auto'" Enter
-Type "mkdir -p /tmp/cloud-native-microservice && zoxide add /tmp/cloud-native-microservice && cd /repo" Enter
+Type "rm -rf /tmp/cloud-native-microservice && mkdir -p /tmp/cloud-native-microservice && zoxide add /tmp/cloud-native-microservice && cd /repo" Enter
 Type "printf '\033[2J\033[H'" Enter
 Show
 
@@ -93,15 +93,15 @@ Sleep 400ms
 Enter
 Sleep 1.5s
 
-Type "touch deploy.yaml"
+Type "echo -e 'name: rocket-service\nenv: production\nreplicas: 3' > deploy.yaml"
 Sleep 400ms
 Enter
 Sleep 1.5s
 
-Type "cat /etc/os-release | head -n 8"
+Type "cat deploy.yaml"
 Sleep 400ms
 Enter
-Sleep 2.5s
+Sleep 3s
 Screenshot "$PREVIEWS_DIR/preview_${NAME}.png"
 Sleep 1s
 TAPE_EOF
