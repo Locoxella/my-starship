@@ -452,18 +452,19 @@ if command -v pwsh &> /dev/null; then
         echo 'if ($env:PATH -notlike "*$HOME/.local/bin*") { $env:PATH = "$HOME/.local/bin:$env:PATH" }' >> "$PWSH_PROFILE"
     fi
 
-    # Fix legacy KeyAvailable guard in PowerShell profile if present
-    if grep -q '\$Host\.UI\.RawUI\.KeyAvailable' "$PWSH_PROFILE"; then
-        echo "[+] Updating PowerShell Starship guard from KeyAvailable to IsInputRedirected..."
-        sed -i 's/\$Host\.UI\.RawUI\.KeyAvailable/-not [Console]::IsInputRedirected/g' "$PWSH_PROFILE"
+    # Clean up any legacy conditional guards around Starship in PowerShell profile
+    if grep -q '\$Host\.UI\.RawUI\.KeyAvailable' "$PWSH_PROFILE" || grep -q 'IsInputRedirected' "$PWSH_PROFILE"; then
+        echo "[+] Harmonizing PowerShell Starship hook to standard invocation..."
+        sed -i 's/if (\$Host\.UI\.RawUI\.KeyAvailable) { Invoke-Expression (&starship init powershell) }/Invoke-Expression (\&starship init powershell)/g' "$PWSH_PROFILE"
+        sed -i 's/if (-not \[Console\]::IsInputRedirected) { Invoke-Expression (&starship init powershell) }/Invoke-Expression (\&starship init powershell)/g' "$PWSH_PROFILE"
     fi
 
     # Starship
     if ! grep -q 'starship init powershell' "$PWSH_PROFILE"; then
         echo "[+] Injecting Starship hook into $PWSH_PROFILE"
         echo '' >> "$PWSH_PROFILE"
-        echo '# Starship prompt initialization (interactive console only)' >> "$PWSH_PROFILE"
-        echo 'if (-not [Console]::IsInputRedirected) { Invoke-Expression (&starship init powershell) }' >> "$PWSH_PROFILE"
+        echo '# Starship prompt initialization' >> "$PWSH_PROFILE"
+        echo 'Invoke-Expression (&starship init powershell)' >> "$PWSH_PROFILE"
     else
         echo "[✓] PowerShell: Starship already configured."
     fi

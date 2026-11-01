@@ -79,9 +79,9 @@ This computer (`Scar`) is the **single source of truth** for the Starship config
 
 ### [2026-10-31] PowerShell Guard Fix, Multi-Architecture Support, Nushell & Gitignore Standardization
 
-1. **PowerShell Interactivity Guard Fix:**
-   - Replaced `$Host.UI.RawUI.KeyAvailable` with `-not [Console]::IsInputRedirected` across `dotfiles/setup_starship.sh`, `dotfiles/setup_starship.ps1`, and local `~/.config/powershell/Microsoft.PowerShell_profile.ps1`.
-   - Prevented Starship initialization failure in interactive PowerShell consoles caused by checking the keyboard buffer.
+1. **PowerShell Starship Harmonization:**
+   - Removed broken `$Host.UI.RawUI.KeyAvailable` and conditional wrappers in favor of canonical `Invoke-Expression (&starship init powershell)` across `dotfiles/setup_starship.sh`, `dotfiles/setup_starship.ps1`, and local `~/.config/powershell/Microsoft.PowerShell_profile.ps1`.
+   - Prevented Starship initialization failure in interactive PowerShell consoles and CI containers.
 2. **Automated Verification Test Suite:**
    - Enhanced `tests/verify_installation.sh` to assert that the PowerShell prompt is actually configured by Starship (`STARSHIP_SHELL` / prompt definition match) rather than testing the built-in default PowerShell `prompt`.
 3. **Multi-Architecture & macOS Support:**
@@ -93,4 +93,3 @@ This computer (`Scar`) is the **single source of truth** for the Starship config
    - Added `scripts/switch_theme.sh` allowing instant switching between Catppuccin flavors (`mocha`, `latte`, `frappe`, `macchiato`).
 6. **Gitignore Standardization:**
    - Replaced minimal ad-hoc `.gitignore` with standard Toptal gitignore.io baseline (Linux, macOS, Windows, VS Code, JetBrains, PowerShell) and preserved custom rules.
->>>>>>> 5fc96d1 (feat: fix PowerShell guard, add ARM64/Nushell support, update fonts, and add ShellCheck CI)

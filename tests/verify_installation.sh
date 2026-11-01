@@ -241,7 +241,7 @@ if command -v pwsh &>/dev/null || [ -f "$HOME/.config/powershell/Microsoft.Power
     echo "  ✓ PowerShell (pwsh) profile verified."
 
     if command -v pwsh &>/dev/null; then
-        env -u ANTIGRAVITY_AGENT -u AI_AGENT TERM=xterm-256color pwsh -NoProfile -Command ". \$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1; if ([string]::IsNullOrEmpty(\$env:STARSHIP_SHELL) -and -not ((Get-Command prompt).Definition -match 'starship' -or \$__zoxide_prompt_old -like '*starship*')) { exit 1 }"
+        env -u ANTIGRAVITY_AGENT -u AI_AGENT pwsh -NoProfile -Command ". \$HOME/.config/powershell/Microsoft.PowerShell_profile.ps1; if (!((Get-Command prompt).Definition -match 'starship' -or \$__zoxide_prompt_old -like '*starship*')) { exit 1 }"
         echo "  ✓ PowerShell prompt execution verified."
     fi
 fi

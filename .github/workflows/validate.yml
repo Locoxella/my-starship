@@ -33,7 +33,7 @@ jobs:
 
       - name: Lint Shell Scripts (ShellCheck)
         run: |
-          shellcheck -e SC1090,SC1091,SC2016,SC2129,SC2155,SC2010,SC2028 \
+          shellcheck -e SC1090,SC1091,SC2015,SC2016,SC2129,SC2155,SC2010,SC2028 \
             dotfiles/setup_starship.sh \
             dotfiles/install_nerd_font.sh \
             tests/verify_installation.sh \

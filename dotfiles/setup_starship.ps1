@@ -92,17 +92,18 @@ foreach ($prof in $profilesToUpdate) {
         
         $content = Get-Content $prof -Raw -ErrorAction SilentlyContinue
         
-        # Fix legacy KeyAvailable guard in PowerShell profile if present
-        if ($content -like "*Host.UI.RawUI.KeyAvailable*") {
-            Write-Host "[+] Updating Starship guard from KeyAvailable to IsInputRedirected in: $prof" -ForegroundColor Yellow
-            $content = $content -replace '\$Host\.UI\.RawUI\.KeyAvailable', '-not [Console]::IsInputRedirected'
+        # Clean up any legacy conditional guards around Starship in PowerShell profile
+        if ($content -like "*Host.UI.RawUI.KeyAvailable*" -or $content -like "*IsInputRedirected*") {
+            Write-Host "[+] Harmonizing Starship hook in: $prof" -ForegroundColor Yellow
+            $content = $content -replace 'if \(\$Host\.UI\.RawUI\.KeyAvailable\) \{ Invoke-Expression \(&starship init powershell\) \}', 'Invoke-Expression (&starship init powershell)'
+            $content = $content -replace 'if \(-not \[Console\]::IsInputRedirected\) \{ Invoke-Expression \(&starship init powershell\) \}', 'Invoke-Expression (&starship init powershell)'
             Set-Content -Path $prof -Value $content -Force
         }
 
         # Starship
         if ($content -notlike "*starship init powershell*") {
             Write-Host "[+] Injecting Starship hook into: $prof" -ForegroundColor Yellow
-            Add-Content -Path $prof -Value "`n# Starship prompt initialization`nif (-not [Console]::IsInputRedirected) { Invoke-Expression (&starship init powershell) }"
+            Add-Content -Path $prof -Value "`n# Starship prompt initialization`nInvoke-Expression (&starship init powershell)"
         } else {
             Write-Host "[✓] Profile already has Starship: $prof" -ForegroundColor Green
         }
