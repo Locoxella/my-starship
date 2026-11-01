@@ -194,9 +194,9 @@ if [ -f "$HOME/.bashrc" ] || command -v bash &> /dev/null; then
         if ! grep -q 'alias ls=.*eza' "$HOME/.bashrc"; then
             echo "[+] Injecting eza aliases into ~/.bashrc"
             echo '# eza aliases (modern ls)' >> "$HOME/.bashrc"
-            echo "alias ls='eza --icons'" >> "$HOME/.bashrc"
-            echo "alias ll='eza -l -g --icons'" >> "$HOME/.bashrc"
-            echo "alias la='eza -a --icons'" >> "$HOME/.bashrc"
+            echo "alias ls='eza --icons=auto'" >> "$HOME/.bashrc"
+            echo "alias ll='eza -l -g --icons=auto'" >> "$HOME/.bashrc"
+            echo "alias la='eza -a --icons=auto'" >> "$HOME/.bashrc"
         else
             echo "[✓] Bash: eza aliases already configured."
         fi
@@ -291,9 +291,9 @@ if [ -f "$HOME/.zshrc" ] || command -v zsh &> /dev/null; then
         if ! grep -q 'alias ls=.*eza' "$ZSH_RC"; then
             echo "[+] Injecting eza aliases into ~/.zshrc"
             echo '# eza aliases (modern ls)' >> "$ZSH_RC"
-            echo "alias ls='eza --icons'" >> "$ZSH_RC"
-            echo "alias ll='eza -l -g --icons'" >> "$ZSH_RC"
-            echo "alias la='eza -a --icons'" >> "$ZSH_RC"
+            echo "alias ls='eza --icons=auto'" >> "$ZSH_RC"
+            echo "alias ll='eza -l -g --icons=auto'" >> "$ZSH_RC"
+            echo "alias la='eza -a --icons=auto'" >> "$ZSH_RC"
         else
             echo "[✓] Zsh: eza aliases already configured."
         fi
@@ -380,9 +380,9 @@ if command -v fish &> /dev/null || [ -d "$FISH_CONFIG_DIR" ]; then
         if ! grep -q 'alias ls=.*eza' "$FISH_CONFIG"; then
             echo "[+] Injecting eza aliases into config.fish"
             echo '# eza aliases (modern ls)' >> "$FISH_CONFIG"
-            echo 'alias ls="eza --icons"' >> "$FISH_CONFIG"
-            echo 'alias ll="eza -l -g --icons"' >> "$FISH_CONFIG"
-            echo 'alias la="eza -a --icons"' >> "$FISH_CONFIG"
+            echo 'alias ls="eza --icons=auto"' >> "$FISH_CONFIG"
+            echo 'alias ll="eza -l -g --icons=auto"' >> "$FISH_CONFIG"
+            echo 'alias la="eza -a --icons=auto"' >> "$FISH_CONFIG"
         else
             echo "[✓] Fish: eza aliases already configured."
         fi
@@ -485,9 +485,9 @@ if command -v pwsh &> /dev/null; then
         if ! grep -q 'function ls .*eza' "$PWSH_PROFILE" && ! grep -q 'function ls { eza' "$PWSH_PROFILE"; then
             echo "[+] Injecting eza functions into $PWSH_PROFILE"
             echo '# eza aliases' >> "$PWSH_PROFILE"
-            echo 'function ls { eza --icons $args }' >> "$PWSH_PROFILE"
-            echo 'function ll { eza -l -g --icons $args }' >> "$PWSH_PROFILE"
-            echo 'function la { eza -a --icons $args }' >> "$PWSH_PROFILE"
+            echo 'function ls { eza --icons=auto $args }' >> "$PWSH_PROFILE"
+            echo 'function ll { eza -l -g --icons=auto $args }' >> "$PWSH_PROFILE"
+            echo 'function la { eza -a --icons=auto $args }' >> "$PWSH_PROFILE"
         else
             echo "[✓] PowerShell: eza functions already configured."
         fi

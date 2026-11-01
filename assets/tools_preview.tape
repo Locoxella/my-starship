@@ -15,7 +15,7 @@ Set Theme "Catppuccin Mocha"
 Hide
 Type "export STARSHIP_CONFIG=$PWD/dotfiles/starship.toml" Enter
 Type 'eval "$(starship init bash)"' Enter
-Type "alias ls='eza --icons'" Enter
+Type "alias ls='eza --icons=auto'" Enter
 Type "clear" Enter
 Show
 

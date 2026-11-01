@@ -67,6 +67,7 @@ Type "docker exec -it $CID bash" Enter
 Sleep 1s
 Type "export STARSHIP_CONFIG=/repo/dotfiles/starship.toml" Enter
 Type "source ~/.bashrc" Enter
+Type "alias ll='eza -l -g --icons=auto'" Enter
 Type "mkdir -p /tmp/cloud-native-microservice && zoxide add /tmp/cloud-native-microservice && cd /repo" Enter
 Type "printf '\033[2J\033[H'" Enter
 Show

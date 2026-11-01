@@ -17,7 +17,7 @@ Hide
 Type "export STARSHIP_CONFIG=$PWD/dotfiles/starship.toml" Enter
 Type 'eval "$(starship init bash)"' Enter
 Type 'eval "$(zoxide init bash)"' Enter
-Type "alias ll='eza -l -g --icons'" Enter
+Type "alias ll='eza -l -g --icons=auto'" Enter
 Type "alias cat='bat -P --style plain'" Enter
 Type "mkdir -p /tmp/cloud-native-microservice && zoxide add /tmp/cloud-native-microservice && cd $PWD" Enter
 Type "printf '\033[2J\033[H'" Enter

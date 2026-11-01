@@ -141,3 +141,19 @@ jobs:
           else
             echo "No preview changes to commit"
           fi
+
+          PREVIEW_SHA=$(git rev-parse HEAD)
+          {
+            echo "## 🎬 Live Multi-Distro Execution Demos"
+            echo "Every recording below was generated inside authentic, clean containers running the complete Starship prompt and modern CLI suite (zoxide, eza, bat, git):"
+            echo ""
+            for gif in previews/preview_*.gif; do
+              [ -f "$gif" ] || continue
+              distro_name=$(basename "$gif" .gif | sed 's/preview_//')
+              echo "### 🎥 Native Container Demo: ${distro_name^}"
+              echo '<p align="left">'
+              echo "  <img src=\"https://raw.githubusercontent.com/Locoxella/my-starship/${PREVIEW_SHA}/${gif}\" alt=\"${distro_name} Preview\" width=\"850\" />"
+              echo '</p>'
+              echo ""
+            done
+          } >> "$GITHUB_STEP_SUMMARY"

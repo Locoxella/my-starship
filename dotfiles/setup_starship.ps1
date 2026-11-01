@@ -117,7 +117,7 @@ foreach ($prof in $profilesToUpdate) {
         # eza aliases
         if ($content -notlike "*function ls*eza*" -and (Get-Command eza -ErrorAction SilentlyContinue)) {
             Write-Host "[+] Injecting eza aliases into: $prof" -ForegroundColor Yellow
-            Add-Content -Path $prof -Value "`n# eza aliases`nfunction ls { eza --icons `$args }`nfunction ll { eza -l -g --icons `$args }`nfunction la { eza -a --icons `$args }"
+            Add-Content -Path $prof -Value "`n# eza aliases`nfunction ls { eza --icons=auto `$args }`nfunction ll { eza -l -g --icons=auto `$args }`nfunction la { eza -a --icons=auto `$args }"
         }
 
         # bat aliases

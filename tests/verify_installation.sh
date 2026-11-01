@@ -121,24 +121,8 @@ write_github_summary() {
             [ -n "$PWSH_SUM_1" ] && echo "| \`profile.ps1\` | \`${SHORT_HASH_P1}...\` | \`${SHORT_HASH_P2}...\` | $([ "$PWSH_SUM_1" = "$PWSH_SUM_2" ] && echo "✅ 100% Identical (0 duplicates)" || echo "❌ Modified") |"
             echo ""
         fi
-        local DISTRO_IMG="preview_fedora.gif"
-        if [ -f /etc/os-release ]; then
-            local DIST_ID=$(grep -E '^ID=' /etc/os-release | cut -d= -f2- | tr -d '"')
-            case "$DIST_ID" in
-                *ubuntu*) DISTRO_IMG="preview_ubuntu.gif" ;;
-                *debian*) DISTRO_IMG="preview_debian.gif" ;;
-                *arch*) DISTRO_IMG="preview_archlinux.gif" ;;
-                *suse*) DISTRO_IMG="preview_opensuse.gif" ;;
-                *fedora*) DISTRO_IMG="preview_fedora.gif" ;;
-                *) DISTRO_IMG="preview_fedora.gif" ;;
-            esac
-        fi
-
-        local CACHE_KEY="${GITHUB_RUN_ID:-${GITHUB_SHA:-live}}"
         echo "### 🎥 Native Container Execution Demo (${DISTRO_NAME})"
-        echo '<p align="left">'
-        echo "  <img src=\"https://raw.githubusercontent.com/Locoxella/my-starship/ci-previews/previews/${DISTRO_IMG}?v=${CACHE_KEY}\" alt=\"${DISTRO_NAME} Terminal Preview\" width=\"850\" />"
-        echo '</p>'
+        echo "> ℹ️ **Live Demo**: Recorded during container test run and published with zero-cache commit verification in the **Publish Live Previews to ci-previews** summary below."
         echo ""
         echo "---"
     } >> "$GITHUB_STEP_SUMMARY"
