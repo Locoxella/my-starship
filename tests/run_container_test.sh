@@ -56,8 +56,8 @@ cat << TAPE_EOF > "$TAPE"
 Output "$PREVIEWS_DIR/preview_${NAME}.gif"
 Set Shell "bash"
 Set FontSize 14
-Set Width 900
-Set Height 550
+Set Width 920
+Set Height 600
 Set Padding 20
 Set FontFamily "Hack Nerd Font"
 Set Theme "Catppuccin Mocha"
@@ -67,20 +67,42 @@ Type "docker exec -it $CID bash" Enter
 Sleep 1s
 Type "export STARSHIP_CONFIG=/repo/dotfiles/starship.toml" Enter
 Type "source ~/.bashrc" Enter
+Type "mkdir -p /tmp/cloud-native-microservice && zoxide add /tmp/cloud-native-microservice && cd /repo" Enter
 Type "printf '\033[2J\033[H'" Enter
 Show
 
-Sleep 800ms
-Type "fastfetch --structure Title:OS:Host:Kernel:Shell:Terminal"
-Sleep 500ms
-Enter
-Sleep 3s
-
-Type "eza --icons --group-directories-first dotfiles/"
-Sleep 500ms
+Sleep 600ms
+Type "fastfetch --structure Title:OS:Kernel:Shell"
+Sleep 400ms
 Enter
 Sleep 2s
+
+Type "ll dotfiles/"
+Sleep 400ms
+Enter
+Sleep 2s
+
+Type "z cloud-native"
+Sleep 400ms
+Enter
+Sleep 2s
+
+Type "git init -b feature/rocket-launch"
+Sleep 400ms
+Enter
+Sleep 1.5s
+
+Type "touch deploy.yaml"
+Sleep 400ms
+Enter
+Sleep 1.5s
+
+Type "cat /etc/os-release | head -n 8"
+Sleep 400ms
+Enter
+Sleep 2.5s
 Screenshot "$PREVIEWS_DIR/preview_${NAME}.png"
+Sleep 1s
 TAPE_EOF
 
 export VHS_NO_SANDBOX=true

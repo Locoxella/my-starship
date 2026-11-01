@@ -16,21 +16,40 @@ Set Theme "Catppuccin Mocha"
 Hide
 Type "export STARSHIP_CONFIG=$PWD/dotfiles/starship.toml" Enter
 Type 'eval "$(starship init bash)"' Enter
-Type "clear" Enter
+Type 'eval "$(zoxide init bash)"' Enter
+Type "alias ll='eza -l -g --icons'" Enter
+Type "alias cat='bat -P --style plain'" Enter
+Type "mkdir -p /tmp/cloud-native-microservice && zoxide add /tmp/cloud-native-microservice && cd $PWD" Enter
+Type "printf '\033[2J\033[H'" Enter
 Show
 
-Sleep 800ms
-Type "fastfetch --structure Title:OS:Host:Kernel:Shell:Terminal"
-Sleep 500ms
+Sleep 600ms
+Type "fastfetch --structure Title:OS:Kernel:Shell"
+Sleep 400ms
 Enter
 Sleep 2s
 
-Type "eza --icons --group-directories-first dotfiles/"
-Sleep 500ms
+Type "ll dotfiles/"
+Sleep 400ms
 Enter
 Sleep 2s
 
-Type "echo 'Cross-shell prompt powered by Starship! 🚀'"
-Sleep 500ms
+Type "z cloud-native"
+Sleep 400ms
+Enter
+Sleep 2s
+
+Type "git init -b feature/rocket-launch"
+Sleep 400ms
+Enter
+Sleep 1.5s
+
+Type "touch deploy.yaml"
+Sleep 400ms
+Enter
+Sleep 1.5s
+
+Type "cat /repo/README.md 2>/dev/null || cat README.md | head -n 12"
+Sleep 400ms
 Enter
 Sleep 3s
