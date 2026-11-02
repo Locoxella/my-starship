@@ -211,3 +211,8 @@ After completing the installation on the client machine, the AI agent should:
 3. 🔄 Instruct the user to restart their terminal session or source their shell profile.
 4. 🔤 Remind the user to select **Hack Nerd Font** in their terminal emulator settings.
 5. 💡 If any unsupported environment was encountered, report suggested improvements to the maintainer.
+
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
