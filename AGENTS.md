@@ -104,3 +104,12 @@ bash -n tests/bootstrap_distro.sh
 2. **Idempotence:** Every setup script must be safe to run multiple times without duplicating shell hooks or corrupting profile files.
 3. **Multi-Platform Support:** When altering `starship.toml` or setup scripts, ensure compatibility across Linux, WSL, macOS, Windows PowerShell, and CMD.
 4. **Font Standards:** Always use **Hack Nerd Font** for terminal/console tasks and **FiraCode Nerd Font** for code editors/IDEs. Never use or assume JetBrains Mono.
+
+---
+## Language, Token Optimization & Agent Directives
+- **Operating Principle & Token Efficiency**: English is strictly mandatory across all agent operations to preserve token budgets and avoid sub-word tokenization overhead.
+- **Language Boundaries**:
+  - **Rules, Skills & Prompts**: Strictly English.
+  - **Internal Reasoning & Thoughts**: Strictly English (agents must never reason in Spanish).
+  - **Documentation & Commits**: Strictly English (`README.md`, `docs/`, code comments, commit messages).
+  - **User Interactions**: Default to English in chat for maximum conciseness and token economy. Only reply in Spanish if the user explicitly requests Spanish.
